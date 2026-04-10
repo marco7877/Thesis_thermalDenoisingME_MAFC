@@ -1,0 +1,14 @@
+
+\begin{onehalfspace}
+    
+In this thesis, we first reviewed the fundamental principles of nuclear magnetic resonance (Chapter \ref{chap:MRI}) and described how they enable functional magnetic resonance imaging through the blood-oxygenation-level–dependent (BOLD) effect (Chapter \ref{chap:fMRI}). We examined how the sensitivity of the fMRI signal is degraded by multiple noise sources (e.g., physiological, thermal, and motion-related) and how multi-echo acquisitions provide a multicontrast framework that enhances BOLD sensitivity against motion and physiological confounds. This analysis led us to identify the need for an optimized strategy to mitigate thermal noise, which has become increasingly relevant as contemporary acquisitions move toward higher spatial resolution and are therefore more strongly affected by this noise component.
+
+In Chapters \ref{chap:denoising} and \ref{chap:taskdenoising}, we investigated the impact of extending several established single-echo denoising techniques (e.g., MPPCA, NORDIC, HYDRA, and TMPPCA) to multi-echo fMRI data, considering both task-based and resting-state paradigms.
+
+Our results indicate that, overall, application of any of the evaluated denoising techniques substantially improves sensitivity without introducing substantial bias into signal estimates when used in conjunction with optimal-echo combination. As anticipated, the now widely adopted NORDIC method yields robust improvements in signal stability for resting-state data as well as enhanced task localization and response reconstruction. However, it is consistently outperformed by TMPPCA across all evaluated metrics.
+
+TMPPCA relies on a higher-order singular value decomposition that determines the noise floor by jointly exploiting noise estimation within and across echoes for a given voxel patch. In addition to the improvements in signal quality, TMPPCA offers a practical advantage: it operates solely on magnitude data, in contrast to NORDIC, which requires both magnitude and phase information as well as dedicated noise scans.
+
+Our findings suggest that, for high-resolution fMRI, the most effective strategy for improving signal quality—irrespective of the experimental paradigm—is to employ TMPPCA as the primary denoising approach, followed by NORDIC as a secondary option.
+
+\end{onehalfspace}

@@ -1,0 +1,239 @@
+\documentclass[a4page, 11pt, showtrims]{memoir}
+\semiisopage
+
+
+
+%% KAPITULU FORMATU BATZUK ARAZOAK EMATEN DITUZTE DOKUMENTUA 
+%% MOZTERAKOAN (croppedsize AUKERAREKIN, BEHEAN AGERTZEN DENA). 
+%% JARRAIAN ALTERNATIBA SGURU BATZUK DAUDE
+
+%\chapterstyle{default}
+%\chapterstyle{bianchi}
+%\chapterstyle{brotherton}
+%\chapterstyle{demo2}
+%\chapterstyle{ell}
+%\chapterstyle{ger}
+%\chapterstyle{wilsondob}
+
+
+\pdfobjcompresslevel 0
+
+
+
+%% PAKETE HONEN AGINDUAK ERABILTZEN BADIRA, ALDATU HIZKUNTZA AUKERA %%
+%% SI SE USAN LOS COMANDOS DE ESTE PAQUETE, CAMBIAR LA OPCIÓN DE IDIOMA %%
+\usepackage[es]{ifcommands}
+\usepackage{csquotes}
+\usepackage{apacite} 
+\usepackage{natbib}
+\usepackage[table]{xcolor}
+\usepackage{float}
+\usepackage{graphics}
+\usepackage{amsfonts}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{ragged2e}
+\usepackage{tikz}
+
+% Your colors
+\definecolor{mainblue}{RGB}{0,159,218}
+\definecolor{lightgray}{RGB}{195,200,200}
+
+
+
+
+
+\chapterstyle{veelo}
+\makeatletter
+
+% "Chapter" word → blue
+\renewcommand*{\chapnamefont}{%
+  \normalfont\Large\bfseries\color{lightgray}
+}
+
+% Chapter number → light gray
+\renewcommand*{\chapnumfont}{%
+  \normalfont\Huge\bfseries\color{mainblue}
+}
+
+% Chapter title → light gray
+\renewcommand*{\chaptitlefont}{%
+  \normalfont\Huge\bfseries\color{mainblue}
+}
+
+\makeatother
+% Sections → blue
+\setsecheadstyle{\color{mainblue}\Large\bfseries}
+
+% Subsections → blue
+\setsubsecheadstyle{\color{mainblue}\large\bfseries}
+
+% Subsubsections (optional, but usually nice to keep consistent)
+\setsubsubsecheadstyle{\color{mainblue}\normalsize\bfseries}
+
+
+
+
+%% INFORMAZIOA / INFORMACIÓN %%
+\newcommand{\egilea}{Marco Antonio Flores Coronado}
+\newcommand{\zuzendariak}{
+	C\'esar Caballero-Gaudes\\
+	Clara Martin
+}
+\newcommand{\izenburua}{Thermal noise-reduction strategies for multi-echo fMRI}
+\newcommand{\data}{\today}
+
+
+%% BAKARRIK BAT DESKOMENTATU, GRADU AMAIERAKO LANA BADA. BESTELA, DENAK KOMENTATU%%
+%% DESCOMENTAR SOLO UNO SI ES UN TRABAJO FIN DE GRADO. SINO, COMENTAR TODOS%%
+
+%\newcommand{\ikasketak}{Informatika Ingeniaritzako Gradua}
+\newcommand{\ikasketak}{Doctoral Program in Cognitive Neuroscience}
+%\newcommand{\ikasketak}{Adimen Artifizialeko Gradua}
+%\newcommand{\ikasketak}{Grado en Inteligencia Artificial}
+
+
+%% BAKARRIK BAT DESKOMENTATU, INGENIARITZA INFORMATIKAKOA BADA. BESTELA, DENAK KOMENTATU %%
+%% DESCOMENTAR SOLO UNO SI ES EN INGENIERÍA INFORMÁTICA. SINO, COMENTAR TODOS %%
+
+%\newcommand{\espezialitatea}{Konputazioa}
+%\newcommand{\espezialitatea}{Computación}
+%\newcommand{\espezialitatea}{Software Ingeniaritza}
+%\newcommand{\espezialitatea}{Ingeniería de Software}
+%\newcommand{\espezialitatea}{Konputagailuen Ingeniaritza}
+%\newcommand{\espezialitatea}{Ingeniería de Computadores}
+
+
+%% BAKARRIK BAT DESKOMENTATU MASTER AMAIERAKO LANA BADA. BESTELA, DENAK KOMENTATU%%
+%% DESCOMENTAR SOLO UNO SI ES UN TRABAJO FIN DE MASTER. SINO, COMENTAR TODOS%%
+
+%\newcommand{\ikasketak}{Máster Universitario en Ingeniería Computacional y Sistemas Inteligentes}
+%\newcommand{\ikasketak}{Konputazio Ingeniaritza eta Sistema Adimentsuak Unibertsitate Masterra}
+
+%% TESIENTZAKO KONFIGURATU
+%\newcommand{\saila}{Department of Computer Science and Artificial Intelligence}
+\newcommand{\phdarloa}{Cognitive Neuroscience}
+%% KOMENTATU A4 FORMATUAN ATERATZEKO, FORMATU TXIKIAGOAN AGERTZEKO 
+%% GERO INPRIMATZEKO. MOZTEKO MARKAK IKUSTEKO GEHITU showtrims AUKERA
+%% memoir KLASEAREN ARGUMENTUETAN
+%\newcommand{\croppedsize}
+
+%% DOKUMENTUAREN HIZKUNTZA / IDIOMA DEL DOCUMENTO %%
+%% BAKARRIK BAT DESKOMENTATU / DESCOMENTAR SOLO UNO %%
+%\newcommand{\euskaraz}
+%\newcommand{\castellano}
+\newcommand{\english}
+
+
+\input config/macros
+
+\title{\izenburua}
+\author{\egilea}
+\date{\data}
+
+
+\begin{document}
+
+
+%% AZALA BEREZIRIK BADUZU (PDF FORMATUAN), DESKOMENTATU%%
+%% SI HAY UNA PORTADA ESPECIAL (EN PDF), DESCOMENTAR%%
+	
+%\includepdf[pages={1-}]{cover.pdf}
+%\cleardoublepage
+
+
+%% AUKERATU DAGOKIONA. AZALA BEREZIA GEHITUZ GERO, KOMENTATU DAITEKE, BETIERE HEMENGOAN AGERTZEN DEN INFORMAZIOA AGERTZEN BADA %%
+%% SELECCIONA LA QUE CORRESPONDA. EN CASO DE TENER UNA PORTADA ESPECIAL SE PUEDE COMENTAR, SIEMPRE Y CUANDO DICHA PORTADA INCLUYA LA INFORMACIÓN QUE APARECE EN ESTA%%
+
+%\input config/cover_informatika
+%\input config/cover_adimen_artifiziala
+%\input config/cover_masterra
+\input config/cover_phd_dissertation
+
+\cleardoublepage
+\frontmatter
+
+\input chapters/logos
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ESKER ONAK / AGRADECIMIENTOS %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% KOMENTATU HIRU LERRO HAUEK ATALA NAHI EZ BADUZU
+%% COMENTA ESTAS TRES LÍNEAS SI NO QUIERES ESTE APARTADO
+\chapter*{Esker onak / Agradecimientos}
+\input chapters/acknowledgements
+\cleardoublepage
+
+%%%%%%%%%%%%%%%%%%%%%%%
+% LABURPENA / RESUMEN %
+%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter*{Laburpena / Resumen}
+\input chapters/abstract
+\cleardoublepage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% EDUKIEN ZERRENDA / ÍNIDCES %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\tableofcontents
+\clearpage
+\listoffigures
+\clearpage
+\listoftables
+\clearpage
+%\listofalgorithms
+%\addcontentsline{toc}{chapter}{Índice de algoritmos}
+
+
+%%%%%%%%%%%%%%%%%%%%%%
+% EDUKIA / CONTENIDO %
+%%%%%%%%%%%%%%%%%%%%%%
+
+\cleardoublepage
+\mainmatter
+\pagestyle{ruled}
+
+\chapter{Nuclear Magnetic Resonance and Magnetic Resonance Imaging}
+\input chapters/chapter1
+\label{chap:MRI}
+\cleardoublepage
+\chapter{Functional Magnetic Resonance Imaging (fMRI)}
+\input chapters/chapter2
+\label{chap:fMRI}
+\cleardoublepage
+\chapter{Thermal denoising for multi-echo resting-state fMRI data}
+\input chapters/chapter3
+\label{chap:denoising}
+\cleardoublepage
+\chapter{Thermal denoising for multi-echo task data}
+\input chapters/chapter4
+\label{chap:taskdenoising}
+\cleardoublepage
+\chapter{General conclusions}
+\input chapters/chapter5
+\label{chap:conclusions}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% ERANSKINAK / APENDICES %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\backmatter
+%\appendix
+
+%\chapter{Eranskina / apéndice} \label{ch:eranskina}
+%\input chapters/appendix
+
+%%%%%%%%%%%%%%%%%%
+%% BIBLIOGRAFIA %%
+%%%%%%%%%%%%%%%%%%
+%\bibliographystyle{unsrt}
+\bibliographystyle{apacite}
+\bibliography{erreferentziak}
+%% ALDATU HEMEN EDUKIEN ZERRENDAN AGERTUKO DEN 
+\addcontentsline{tof}{chapter}{\bibname}
+
+\end{document}

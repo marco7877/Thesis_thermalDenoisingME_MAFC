@@ -1,0 +1,32 @@
+\usepackage{xcolor}
+\usepackage{tikz}
+
+% Your colors
+\definecolor{mainblue}{RGB}{0,159,218}
+\definecolor{lightgray}{RGB}{195,200,200}
+
+\makeatletter
+\makechapterstyle{myveelo}{
+  % Remove default spacing
+  \renewcommand*{\chapterheadstart}{\vspace*{0pt}}
+  
+  % Chapter title format
+  \renewcommand*{\printchaptertitle}[1]{%
+    \begin{tikzpicture}[remember picture,overlay]
+      % Sidebar (gray background)
+      \fill[lightgray] (0,0) rectangle (1.5cm,\paperheight);
+      
+      % Blue accent bar
+      \fill[mainblue] (1.2cm,0) rectangle (1.5cm,\paperheight);
+      
+      % Chapter number
+      \node[rotate=90, anchor=south, text=mainblue, font=\Huge\bfseries]
+        at (0.75cm,5cm) {\thechapter};
+    \end{tikzpicture}
+    
+    % Title shifted right
+    \hspace{2cm}
+    {\chaptitlefont\Huge\bfseries\color{mainblue} ##1}
+  }
+}
+\makeatother

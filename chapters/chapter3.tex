@@ -1,0 +1,662 @@
+
+\section{Introduction}
+\sectionmark{Introduction}
+\label{sec:introRS} 
+
+\begin{onehalfspace}
+    
+
+One of the central objectives of neuroscience is to elucidate the principles governing brain function and self-organization. To this end, human brain function is frequently investigated by relating neural activity to blood-oxygen-level-dependent (BOLD) signals measured with functional magnetic resonance imaging (fMRI), in order to characterize large-scale functional connectivity networks such as the default mode network \citep{menon20YearsDefault2023a}. Functional connectivity analyses link cortical organization to brain function across the lifespan and developmental stages \citep{taylorFunctionalHierarchyHuman2026}.
+
+Functional connectivity networks are inferred from statistical dependencies—typically temporal correlations—in the activity of gray-matter elements or regions of interest (ROIs). These connectivity patterns can be derived from task-evoked activity as well as from spontaneous BOLD signal fluctuations acquired during resting-state or other unstructured conditions \citep{bastosTutorialReviewFunctional2016}.  
+
+Functional connectivity analyses have been shown to yield reliable and reproducible patterns at both the group and individual levels, enabling the identification of individuals on the basis of their characteristic connectivity “fingerprints” \citep{grattonFunctionalBrainNetworks2018a, finnFunctionalConnectomeFingerprinting2015, seitzmanTraitlikeVariantsHuman2019}.
+
+Nonetheless, due to their correlational and mathematical formulation, functional connectivity estimates are highly susceptible to non-neuronal signals (e.g., motion, physiological noise, scanner artifacts) that can distort connectivity patterns and introduce spurious network structure. In this context, multi-echo fMRI acquisition has been demonstrated to enhance the sensitivity and specificity of functional connectivity measures by more effectively attenuating artifacts and non-BOLD components \citep{dipasqualeComparingRestingState2017a, kundu2017multi, kunduIntegratedStrategyImproving2013a}. In densely sampled individuals, multi-echo approaches have further been shown to increase the temporal stability of functional connectivity networks, thereby permitting shorter resting-state acquisitions that nevertheless surpass the reliability of substantially longer single-echo scans \citep{lynchRapidPrecisionFunctional2020}.
+
+
+
+As acquisition parameters are increasingly driven toward lower signal-to-noise ratio (SNR) regimes in pursuit of higher temporal and spatial resolutions, thermal noise becomes a more prominent source of artifacts. Although thermal noise suppression has been investigated for single-echo acquisitions using Marchenko–Pastur principal component analysis (MP-PCA)-inspired methods (Comby et al., 2023), such as NORDIC \citep{moeller2021noise,dowdle2023evaluating}, the optimal strategy to mitigate thermal noise in multi-echo acquisitions, as well as its influence on multi-echo optimal combination and subsequent parameter estimation, remains insufficiently characterized.
+
+In this work, we systematically investigate the impact of several thermal denoising methods (i.e., no denoising, MPPCA, NORDIC, HYDRA—spatially concatenated NORDIC—and TMPPCA) on signal quality and on the estimation of multi-echo–derived quantitative parameters (e.g., $T_2^*$, $S_0$, $R_2^*$; see Sec.~\ref{sec:MEfMRI}). Finally, after characterizing the effects on signal quality, we assess their influence on signal stability by means of a reliability analysis of functional connectivity estimates.
+
+\end{onehalfspace}
+
+
+
+\section{Methods}
+\sectionmark{MethodsRS}
+
+\subsection{Image Acquisition Parameters}
+\subsectionmark{Image Acquisition Parameters}
+\label{ImageParametersN}
+
+
+
+\begin{onehalfspace}
+    
+
+ \par All resting-state MRI data were acquired on a 3T MAGNETOM PrismaFit scanner (Siemens Healthineers) equipped with a 64-channel head coil at the Basque Center on Cognition, Brain, and Language. The overarching objective of the three datasets was to characterize the impact of thermal denoising on multi-echo acquisitions in standard low-resolution protocols and, subsequently, to examine its influence in a high-resolution acquisition regime in which thermal noise is expected to dominate the signal. All runs employed simultaneous multi-slice (SMS) echo-planar imaging with in-plane GRAPPA acceleration. Single-band reference (SBRef) images were acquired for each echo time (TE). For all runs, both magnitude and phase images were reconstructed. In addition, the last three noise-only volumes were retained from each run, as these data are required for the NORDIC thermal noise reduction procedure. Finally, T1-weighted MP2RAGE and T2-weighted Turbo Spin Echo images were acquired at 1 mm isotropic resolution for each participant (see Fig.~\ref{fig:dataset} for an overview of the resting-state datasets).
+
+ \begin{figure}[htbp]
+     \centering
+     \includegraphics[width=6cm]{images/Datasets.pdf}
+     \caption[Resting State datasets overview]{Resting State datasets overview. }
+     \label{fig:dataset}
+ \end{figure}
+
+\textbf{2.4 mm and 2.0 mm datasets (low resolution)} Five healthy adult volunteers (three female) were scanned using two distinct four-echo fMRI sequences. For the first sequence, data were acquired with an isotropic voxel size of 2.4 mm (TR = 1.2 s, TEs = 11.2/28.1/45.0/61.9 ms). For the second sequence, data were acquired with an isotropic voxel size of 2.0 mm (TR = 1.7 s, TEs = 13.4/36.1/58.8/81.5 ms). Both sequences employed simultaneous multi-slice (SMS) acceleration with a factor of 5, GRAPPA acceleration with a factor of 2, and 65/75 whole-head sagittal slices (depending on voxel size). The primary objective of these datasets is to characterize the trade-off between temporal and spatial resolution in the context of thermal-noise–dominated denoising.
+
+\textbf{1.5 mm dataset (high resolution)} A healthy male volunteer was scanned with a three-echo fMRI sequence during two 30-minute runs at 1.5 mm isotropic resolution (TR = 2 s, TEs = 16/46.92/77.84 ms, SMS = 4, partial Fourier (PF) = 6/8, GRAPPA = 2). The primary objective of this dataset is to investigate the impact of denoising at the highest spatial resolution that is practically achievable at 3T, where thermal noise is the dominant contributor to the signal-to-noise ratio (SNR).
+ \textbf{Thermal denoising} Each dataset was denoised independently through different algorithms: undenoised (vanilla), mppca, Nordic, Nordic over spatially concatenated echoes (Hydra), or tensor mppca. 
+
+\textbf{fMRI preprocessing} Multi-echo (ME) fMRI data were minimally preprocessed using AFNI. The preprocessing pipeline comprised discarding the initial 10 volumes to ensure steady-state magnetization, realigning the first echo to the single-band reference (SBRef) image, and applying the resulting transformation parameters to all remaining echoes. For the high-resolution dataset, both runs were additionally aligned to the SBRef of the first run using a local Pearson correlation cost function (\texttt{align\_epi\_anat.py}, 3dAllineate). A T2\textbf{*}-weighted optimal linear combination of the echoes was subsequently computed using TEDANA (multi-echo optimal combination, ME-OC). 
+
+To further evaluate the stability of the thermal noise estimation and the associated variance removal in the reliability analysis, the same minimal preprocessing pipeline was independently applied to the first and second halves of the high-resolution dataset time series (see Fig.~\ref{fig:preprocessing}). This additional step was performed exclusively on the high-resolution dataset, as this dataset is expected to exhibit greater noise variance, thereby rendering potential changes more detectable. 
+
+\begin{figure}[htbp]
+    \centering
+    
+     \textbf{(a)}   
+    \includegraphics[width=12cm]{images/Process_diagram.png}  
+    \caption[Diagram of fMRI preprocessing pipeline.] {For each time series, a minimal preprocessing pipeline was applied, including, for example, motion correction and optimal echo combination. Denoised versions of the same time series underwent an identical preprocessing procedure as the corresponding raw data. The transformation matrix was always derived from the raw time series to prevent potential bias of the rigid-motion parameter estimation by the denoising procedure. Finally, for the reliability analysis, the same minimal preprocessing pipeline was independently applied to the first and second halves of the high-resolution dataset time series to assess the stability of the thermal noise estimation.}
+    \label{fig:preprocessing}
+\end{figure}
+
+ \textbf{Region of interest (ROI) creation} Anatomical images for each dataset were segmented using FreeSurfer (version 7.4.0) with the \texttt{recon-all} pipeline \citep{fischl2004automatically}. The resulting segmentations were subsequently transformed into AFNI volumetric space using the \texttt{@SUMA\_Make\_Spec\_FS} utility. A custom ROI mask was then generated with AFNI’s \texttt{3dcalc}, incorporating the bilateral cortical gray-matter ribbons as well as subcortical structures. 
+
+From the SUMA output, a skull-stripped anatomical volume was rigid-body aligned to the single-band reference (sbref) image of the first echo. The alignment was estimated using local Pearson correlation as the cost function. The resulting transformation matrix was then applied to the ROI mask to register it from anatomical space into functional space. 
+
+\end{onehalfspace}
+
+\section{Analysis}
+\begin{onehalfspace}
+
+
+\textbf{Temporal Signal-to-Noise Ratio (tSNR):} tSNR maps were computed from the whole-brain ME-OC time series to characterize data quality after denoising. This metric reflects the noise regime of the data and thereby constrains the sensitivity to detect activity-related signal fluctuations. Given that BOLD signal changes are typically small in magnitude (see Sec.~\ref{sec:BOLD}), higher tSNR values are desirable. tSNR was defined as
+\begin{equation}
+    tSNR = \frac{\overline{S}}{\sigma_S},
+\end{equation}
+where $\overline{S}$ denotes the temporal mean signal intensity and $\sigma_S$ its temporal standard deviation.
+
+Following \citet{liu2016noise}, we expect tSNR values to increase proportionally to the extent to which a denoising method reduces variance. Consequently, denoising strategies yielding higher tSNR values are interpreted as providing higher signal quality, primarily through the reduction of thermal noise variance.
+
+To quantify the magnitude of tSNR changes across denoising methods, we used the vanilla preprocessing pipeline as the baseline. We then computed the percentage change in tSNR, $\Delta \%tSNR$ (see Fig.~\ref{fig:tsnrDistribution}), as the relative difference between a given denoising method and vanilla according to
+\[
+\Delta\% tSNR = \frac{tSNR_{\mathrm{method}} - tSNR_{\mathrm{vanilla}}}{tSNR_{\mathrm{vanilla}}} \times 100.
+\]
+.
+
+\textbf{Relaxation Rate Estimation ($R_{2}^*$):} The effective transverse relaxation rate was derived from exponential decay time-series estimates obtained using the \texttt{tedana} pipeline, based on the relation $1/R_2^* = T_{2}^*$ \citep{dupre2021te, kundu2012differentiating}. For each voxel, we then computed the mean relaxation rate, $\overline{R_2^*}$, and treated this quantity as an approximation of the underlying (true) relaxation rate. Subsequently, $\Delta R_2^*$ was defined as the deviation of the instantaneous relaxation rate from this mean value, expressed in units of s$^{-1}$. We assumed that physiologically driven fluctuations in relaxation rate occur within a range of approximately $|1 \text{ s}^{-1}|$; thus, we examined how thermal denoising influenced the physiological plausibility of the resulting $R_2^*$ signal (see Fig.~\ref{fig:relaxation}).
+
+\textbf{Functional Connectivity Reliability:} Reliability maps were calculated following the procedures described in \citet{lynchRapidPrecisionFunctional2020}(see Fig.~\ref{fig:FCreliability}). Specifically, for each ME-OC timeseries, FC maps were created using each gray matter (GM) voxel as a seed, which were segmented using each subject's anatomical images, by computing  the Pearson's linear correlation between the seed timeseries and the timeseries of the rest of GM voxels. This results in a FC matrix with $voxel\times voxel$ dimension. FC maps were calculated independently for the first and secodn half of each timeseries.  Reliability was calculated as the FC Pearson spatial correlation ($r^{2}$) between ground truth and the remaining maps. Reliability values indicate similarity between the FC of a given voxel between both halves, therefore we use as a way to test signal stability through time.
+
+\end{onehalfspace}
+
+\label{sec:methodsRS}
+
+\section{Results}
+\sectionmark{Results}
+\label{sec:ResultsRS}
+%%%%%%-------
+% -----------tSNR
+% -----------
+%%%%%%-------
+\subsection{tSNR}
+%%%%%  -- 2.4 mm -- %%%%%
+%-- boxplots
+\begin{figure}[htbp]
+\centering \colorbox{white}{
+    \centering
+    \begin{tabular}{>{\centering\arraybackslash}m{.7cm}>{\centering\arraybackslash}m{4.5cm}>{\centering\arraybackslash}m{4.5cm}}
+       & \textcolor{black}{\textbf{$tSNR$}} & \textcolor{black}{\textbf{$\Delta \% \ tSNR$}} \\
+    \rotatebox[origin=l]{90}{\textcolor{black}{2.4 mm}} &    \includegraphics[width=4.5cm]{images/halfviolin_tsnr_across_subjects_masked1200.png} &
+        \includegraphics[width=4.5cm]{images/halfviolin_tsnrspc_across_subjects_masked1200.png}\\
+       \rotatebox[origin=l]{90}{\textcolor{black}{2 mm}} & \includegraphics[width=4.5cm]{images/halfviolin_tsnr_across_subjects_masked1700.png}&\includegraphics[width=4.5cm]{images/halfviolin_tsnrspc_across_subjects_masked1700.png} \\
+      \rotatebox[origin=l]{90}{\textcolor{black}{1.5 mm}}&   \includegraphics[width=4.5cm]{images/halfviolin_tsnr_across_subjects_maskedHR.png}   &\includegraphics[width=4.5cm]{images/halfviolin_tsnr_across_subjects_masked.png} \\
+    \end{tabular}
+    }
+    \caption[Distribution of tSNR values per dataset]{Distribution of tSNR values per dataset. The left panel depicts tSNR violinplot distribution for each denoising strategy, each row correspond to a different voxel resolution. We can observe how in the multisubject dataset distribution of tSNR increase for TMPPCA across all subjects, which is congruent with the results from the scatter. MPPCA always gives the lowest increase in all low resoution dataset, thus its performance is similar to HYDRA in the high resolution dataset. NORDIC on independent echoes gives a constant tSNR improvement, but not as pronunced as TMPPCA. The right panel shows $\Delta \% \mathrm{tSNR}$ distributions, again TMPPCA reigns as the strategy that best increase tSNR values.}
+    \label{fig:tsnrDistribution}
+\end{figure}
+
+
+An evaluation of the tSNR maps revealed an inverse relationship between spatial resolution and tSNR, with lower resolution datasets exhibiting higher tSNR values ($2.4\text{mm} > 2\text{mm} > 1.5\text{mm}$), as illustrated in Fig.~\ref{fig:tsnrDistribution}. A voxel-wise analysis of the relative change ($\Delta\%tSNR$) across all participants showed that, among the denoising methods tested, TMPPCA consistently resulted in the largest increase in tSNR compared to the vanilla (non-denoised) condition. While all denoising techniques reduced data variance, TMPPCA proved to be the most effective. This analysis alone, however, cannot determine whether the reduction in variance corresponds to the removal of noise or the attenuation of the signal of interest.
+
+\subsubsection{tSNR: 2.4 mm Dataset}
+\begin{figure}[htbp]
+\centering \colorbox{black}{
+    \centering
+    \begin{tabular}{>{\centering\arraybackslash}m{.7cm}>{\centering\arraybackslash}m{3cm}>{\centering\arraybackslash}m{3cm}>{\centering\arraybackslash}m{.7cm}}
+    
+       & \textcolor{white}{\textbf{tSNR}} & \textcolor{white}{\textbf{$\Delta \%tSNR$}}& \\
+   \rotatebox[origin=l]{90}{\textcolor{white}{VANILLA}}
+  &    \includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1200_OC_part-mag_bold_vanilla_tsnr_all.jpg} & & \textcolor{white}{tSNR} \includegraphics[width=.5cm]{images/Plasmatsnr.png}\\
+     \rotatebox[origin=l]{90}{\textcolor{white}{MPPCA}}
+  &    \includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1200_OC_part-mag_bold_mppca_tsnr_all} &\includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1200_OCspc_part-mag_bold_mppca_all} &\\
+       \rotatebox[origin=l]{90}{\textcolor{white}{NORDIC}}
+  &    \includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1200_OC_part-mag_bold_nordic_tsnr_all.jpg} &\includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1200_OCspc_part-mag_bold_nordic_all} &\\
+       \rotatebox[origin=l]{90}{\textcolor{white}{HYDRA}}
+  &    \includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1200_OC_part-mag_bold_hydra_tsnr_all.jpg} &\includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1200_OCspc_part-mag_bold_hydra_all} &\\
+       \rotatebox[origin=l]{90}{\textcolor{white}{TMPPCA}}
+  &    \includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1200_OC_part-mag_bold_tmppca_tsnr_all.jpg} &\includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1200_OCspc_part-mag_bold_tmppca_all} &\textcolor{white}{$\Delta \%$} \includegraphics[width=.5cm]{images/SPC.png}\\
+    \end{tabular}
+    }
+    \caption[tSNR  maps, Low resolution (2.4 mm isotropic)]{tSNR maps at low spatial resolution (2.4 mm isotropic) are displayed with an upper saturation limit of 100 arbitrary units. The left panel presents tSNR maps for each denoising method. These maps illustrate that thermal denoising increases tSNR, as evidenced by the higher degree of saturation. Consistent with observations in single-echo acquisitions, NORDIC and HYDRA yield higher tSNR values than MPPCA, whereas TMPPCA provides the highest tSNR among all evaluated denoising approaches. The right panel shows $\Delta \% \mathrm{tSNR}$ maps, representing the percentage change in tSNR relative to the vanilla (non-denoised) data used as baseline. These maps further confirm that TMPPCA outperforms all other methods, as indicated by the larger extent of saturation.}
+    \label{fig:tsnr1200}
+\end{figure}
+%-- scatterplot
+\begin{figure}[htbp]
+\centering \colorbox{white}{
+    \centering
+    \begin{tabular}{>{\centering\arraybackslash}m{.7cm}>{\centering\arraybackslash}m{2cm}>{\centering\arraybackslash}m{2cm}>{\centering\arraybackslash}m{2cm}>{\centering\arraybackslash}m{2cm}}
+       & \textcolor{black}{\textbf{MPPCA}}
+       & \textcolor{black}{\textbf{NORDIC}}
+       & \textcolor{black}{\textbf{HYDRA}}
+       & \textcolor{black}{\textbf{TMPPCA}}\\
+       \rotatebox[origin=l]{90}{\textcolor{black}{sub-001}}& \includegraphics[width=2cm]{images/sub-001_vanilla_vs_mppca_tsnr_scatter1200.png}
+       & \includegraphics[width=2cm]{images/sub-001_vanilla_vs_nordic_tsnr_scatter1200.png}
+       & \includegraphics[width=2cm]{images/sub-001_vanilla_vs_hydra_tsnr_scatter1200.png}
+       & \includegraphics[width=2cm]{images/sub-001_vanilla_vs_tmppca_tsnr_scatter1200.png}\\
+         \rotatebox[origin=l]{90}{\textcolor{black}{sub-002}}& \includegraphics[width=2cm]{images/sub-002_vanilla_vs_mppca_tsnr_scatter1200.png}
+       & \includegraphics[width=2cm]{images/sub-002_vanilla_vs_nordic_tsnr_scatter1200.png}
+       & \includegraphics[width=2cm]{images/sub-002_vanilla_vs_hydra_tsnr_scatter1200.png}
+       & \includegraphics[width=2cm]{images/sub-002_vanilla_vs_tmppca_tsnr_scatter1200.png}\\
+       \rotatebox[origin=l]{90}{\textcolor{black}{sub-003}}& \includegraphics[width=2cm]{images/sub-003_vanilla_vs_mppca_tsnr_scatter1200.png}
+       & \includegraphics[width=2cm]{images/sub-003_vanilla_vs_nordic_tsnr_scatter1200.png}
+       & \includegraphics[width=2cm]{images/sub-003_vanilla_vs_hydra_tsnr_scatter1200.png}
+       & \includegraphics[width=2cm]{images/sub-003_vanilla_vs_tmppca_tsnr_scatter1200.png}\\
+       \rotatebox[origin=l]{90}{\textcolor{black}{sub-004}}& \includegraphics[width=2cm]{images/sub-004_vanilla_vs_mppca_tsnr_scatter1200.png}
+       & \includegraphics[width=2cm]{images/sub-004_vanilla_vs_nordic_tsnr_scatter1200.png}
+       & \includegraphics[width=2cm]{images/sub-004_vanilla_vs_hydra_tsnr_scatter1200.png}
+       & \includegraphics[width=2cm]{images/sub-004_vanilla_vs_tmppca_tsnr_scatter1200.png}\\
+       \rotatebox[origin=l]{90}{\textcolor{black}{sub-005}}& \includegraphics[width=2cm]{images/sub-005_vanilla_vs_mppca_tsnr_scatter1200.png}
+       & \includegraphics[width=2cm]{images/sub-005_vanilla_vs_nordic_tsnr_scatter1200.png}
+       & \includegraphics[width=2cm]{images/sub-005_vanilla_vs_hydra_tsnr_scatter1200.png}
+       & \includegraphics[width=2cm]{images/sub-005_vanilla_vs_tmppca_tsnr_scatter1200.png}\\
+       \end{tabular}
+    }
+    \caption[tSNR scatterplots between methods, 2.4 mm]{tSNR scatterplots are presented for each subject (2.4 mm isotropic resolution), comparing baseline (“vanilla”) tSNR values with those obtained following each denoising strategy. Vanilla tSNR values are displayed on the x-axis, while the corresponding tSNR values after application of each denoising method are shown on the y-axis. In the absence of any denoising benefit, the data points are expected to align closely with the identity line (red line), indicating a linear relationship with unit slope and no systematic deviation. Deviations of the point cloud from this identity line (either above or below) quantify the voxelwise magnitude and direction of tSNR change. Consistent with the qualitative impressions from the tSNR maps, all evaluated denoising methods increase tSNR. In particular, TMPPCA exhibits a pronounced positive shift, with the scatter markedly skewed towards higher tSNR values, indicating a substantial per-voxel improvement in tSNR.}
+    \label{fig:scatter1200}
+\end{figure}
+For the 2.4 mm resolution dataset, tSNR maps revealed a marked increase following the application of thermal denoising (Fig.~\ref{fig:tsnr1200}). The most substantial improvement was observed with TMPPCA, followed by NORDIC and then HYDRA. Notably, the $\Delta\%tSNR$ maps exhibited predominantly positive saturation, with changes frequently exceeding 50\%. To further quantify this effect, we examined the relationship between per-voxel tSNR values in the vanilla and denoised conditions using scatterplots (Fig.~\ref{fig:scatter1200}). This analysis confirmed that TMPPCA exerted the most pronounced positive effect on per-voxel tSNR across all subjects.
+
+
+
+\subsubsection{tSNR: 2 mm Dataset}
+%%%%%  -- 2   mm -- %%%%%
+\begin{figure}[htbp]
+\centering \colorbox{black}{
+    \centering
+    \begin{tabular}{>{\centering\arraybackslash}m{.5cm}>{\centering\arraybackslash}m{3cm}>{\centering\arraybackslash}m{3cm}>{\centering\arraybackslash}m{.5cm}}
+    
+       & \textcolor{white}{\textbf{tSNR}} & \textcolor{white}{\textbf{$\Delta \%tSNR$}}& \\
+   \rotatebox[origin=l]{90}{\textcolor{white}{VANILLA}}
+  &    \includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1700_OC_part-mag_bold_vanilla_tsnr_all.jpg} & & \textcolor{white}{tSNR} \includegraphics[width=.5cm]{images/Plasmatsnr.png}\\
+     \rotatebox[origin=l]{90}{\textcolor{white}{MPPCA}}
+  &    \includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1700_OC_part-mag_bold_mppca_tsnr_all} &\includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1700_OCspc_part-mag_bold_mppca_all} &\\
+       \rotatebox[origin=l]{90}{\textcolor{white}{NORDIC}}
+  &    \includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1700_OC_part-mag_bold_nordic_tsnr_all.jpg} &\includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1700_OCspc_part-mag_bold_nordic_all} &\\
+       \rotatebox[origin=l]{90}{\textcolor{white}{HYDRA}}
+  &    \includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1700_OC_part-mag_bold_hydra_tsnr_all.jpg} &\includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1700_OCspc_part-mag_bold_hydra_all} &\\
+       \rotatebox[origin=l]{90}{\textcolor{white}{TMPPCA}}
+  &    \includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1700_OC_part-mag_bold_tmppca_tsnr_all.jpg} &\includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1700_OCspc_part-mag_bold_tmppca_all} &\textcolor{white}{$\Delta \%$} \includegraphics[width=.5cm]{images/SPC.png}\\
+    \end{tabular}
+    }
+    \caption[tSNR  maps, Low resolution (2 mm isotropic)]{tSNR maps at low spatial resolution (2 mm isotropic) are displayed with an upper saturation threshold of 100 arbitrary units. The left panel depicts tSNR maps for each denoising strategy. These maps demonstrate that thermal denoising increases tSNR, as reflected by the higher degree of saturation. In agreement with the findings from the 2.4 mm isotropic dataset, NORDIC and HYDRA produce higher tSNR values than MPPCA, whereas TMPPCA yields the highest tSNR among all evaluated denoising methods. The tSNR enhancement is particularly evident in deeper brain regions, especially within white matter, indicating that TMPPCA may improve the feasibility of functional and structural investigations targeting these areas. The right panel shows $\Delta \% \mathrm{tSNR}$ maps, which represent the percentage change in tSNR relative to the vanilla (non-denoised) dataset used as the baseline. These maps further corroborate the superior performance of TMPPCA over the other denoising approaches, as indicated by the larger spatial extent and magnitude of saturation.}
+    \label{fig:tsnr1700}
+\end{figure}
+%-- scatterplot
+\begin{figure}[htbp]
+\centering \colorbox{white}{
+    \centering
+    \begin{tabular}{>{\centering\arraybackslash}m{.7cm}>{\centering\arraybackslash}m{2cm}>{\centering\arraybackslash}m{2cm}>{\centering\arraybackslash}m{2cm}>{\centering\arraybackslash}m{2cm}}
+       & \textcolor{black}{\textbf{MPPCA}}
+       & \textcolor{black}{\textbf{NORDIC}}
+       & \textcolor{black}{\textbf{HYDRA}}
+       & \textcolor{black}{\textbf{TMPPCA}}\\
+       \rotatebox[origin=l]{90}{\textcolor{black}{sub-001}}& \includegraphics[width=2cm]{images/sub-001_vanilla_vs_mppca_tsnr_scatter1700.png}
+       & \includegraphics[width=2cm]{images/sub-001_vanilla_vs_nordic_tsnr_scatter1700.png}
+       & \includegraphics[width=2cm]{images/sub-001_vanilla_vs_hydra_tsnr_scatter1700.png}
+       & \includegraphics[width=2cm]{images/sub-001_vanilla_vs_tmppca_tsnr_scatter1700.png}\\
+         \rotatebox[origin=l]{90}{\textcolor{black}{sub-002}}& \includegraphics[width=2cm]{images/sub-002_vanilla_vs_mppca_tsnr_scatter1700.png}
+       & \includegraphics[width=2cm]{images/sub-002_vanilla_vs_nordic_tsnr_scatter1700.png}
+       & \includegraphics[width=2cm]{images/sub-002_vanilla_vs_hydra_tsnr_scatter1700.png}
+       & \includegraphics[width=2cm]{images/sub-002_vanilla_vs_tmppca_tsnr_scatter1700.png}\\
+       \rotatebox[origin=l]{90}{\textcolor{black}{sub-003}}& \includegraphics[width=2cm]{images/sub-003_vanilla_vs_mppca_tsnr_scatter1700.png}
+       & \includegraphics[width=2cm]{images/sub-003_vanilla_vs_nordic_tsnr_scatter1700.png}
+       & \includegraphics[width=2cm]{images/sub-003_vanilla_vs_hydra_tsnr_scatter1700.png}
+       & \includegraphics[width=2cm]{images/sub-003_vanilla_vs_tmppca_tsnr_scatter1700.png}\\
+       \rotatebox[origin=l]{90}{\textcolor{black}{sub-004}}& \includegraphics[width=2cm]{images/sub-004_vanilla_vs_mppca_tsnr_scatter1700.png}
+       & \includegraphics[width=2cm]{images/sub-004_vanilla_vs_nordic_tsnr_scatter1700.png}
+       & \includegraphics[width=2cm]{images/sub-004_vanilla_vs_hydra_tsnr_scatter1700.png}
+       & \includegraphics[width=2cm]{images/sub-004_vanilla_vs_tmppca_tsnr_scatter1700.png}\\
+       \rotatebox[origin=l]{90}{\textcolor{black}{sub-005}}& \includegraphics[width=2cm]{images/sub-005_vanilla_vs_mppca_tsnr_scatter1700.png}
+       & \includegraphics[width=2cm]{images/sub-005_vanilla_vs_nordic_tsnr_scatter1700.png}
+       & \includegraphics[width=2cm]{images/sub-005_vanilla_vs_hydra_tsnr_scatter1700.png}
+       & \includegraphics[width=2cm]{images/sub-005_vanilla_vs_tmppca_tsnr_scatter1700.png}\\
+       \end{tabular}
+    }
+    \caption[tSNR scatterplots between methods (2 mm isotropic)]{tSNR scatterplots are presented for each subject (2 mm isotropic resolution), comparing baseline (“vanilla”) tSNR values with those obtained following each denoising strategy. Vanilla tSNR values are displayed on the x-axis, while the corresponding tSNR values after application of each denoising method are shown on the y-axis. In the absence of any denoising benefit, the data points are expected to align closely with the identity line (red line), indicating a linear relationship with unit slope and no systematic deviation. Deviations of the point cloud from this identity line (either above or below) quantify the voxelwise magnitude and direction of tSNR change. Consistent with the qualitative impressions from the tSNR maps, all evaluated denoising methods increase tSNR. In particular, TMPPCA exhibits a pronounced positive shift, with the scatter markedly skewed towards higher tSNR values, indicating a substantial per-voxel improvement in tSNR. Noteworthy, until this point, HYDRA represent no changes when compared to NORDIC.}
+    \label{fig:scatter1700}
+\end{figure}
+A similar pattern of tSNR increase following thermal denoising was observed for the 2 mm dataset (Fig.~\ref{fig:tsnr1700}). As with the 2.4 mm data, TMPPCA yielded the most noticeable improvement, followed by NORDIC and HYDRA. The $\Delta\%tSNR$ maps were again predominantly positively saturated, with changes $\geqslant50\%$. This consistency across the two higher-resolution datasets is likely attributable to both operating within a high SNR regime, where physiological noise, rather than thermal noise, is the dominant confound.
+
+Scatterplot analysis of per-voxel tSNR values corroborated these findings, with TMPPCA demonstrating the greatest effect on increasing tSNR across all subjects (Fig.~\ref{fig:scatter1700}). Notably, the voxel distribution in the vanilla-TMPPCA scatterplots was more tightly clustered compared to that of the 2.4 mm dataset. This more constrained distribution provides evidence that the 2 mm dataset resides in a slightly lower SNR regime.
+
+
+\subsubsection{tSNR: 1.5 mm Dataset}
+
+%%%%%  -- 1.5 mm -- %%%%%
+\begin{figure}[htbp]
+\centering
+\centering \colorbox{black}{
+    \centering
+        \begin{tabular}{>{\centering\arraybackslash}m{.7cm}>{\centering\arraybackslash}m{3cm}>{\centering\arraybackslash}m{3cm}>{\centering\arraybackslash}m{.7cm}}
+    
+       & \textcolor{white}{\textbf{tSNR}} & \textcolor{white}{\textbf{$\Delta \%tSNR$}}& \\
+   \rotatebox[origin=l]{90}{\textcolor{white}{VANILLA}}
+  &    \includegraphics[width=3cm]{images/sub-001_ses-1_task-REST_run-1_OC_part-mag_bold_vanilla_tsnr_all.jpg} & & \textcolor{white}{tSNR} \includegraphics[width=.5cm]{images/Plasmatsnr.png}\\
+     \rotatebox[origin=l]{90}{\textcolor{white}{MPPCA}}
+  &    \includegraphics[width=3cm]{images/sub-001_ses-1_task-REST_run-1_OC_part-mag_bold_mppca_tsnr_all.jpg} &\includegraphics[width=3cm]{images/sub-001_ses-1_task-REST_run-1_OCspc_part-mag_bold_mppca_all} &\\
+       \rotatebox[origin=l]{90}{\textcolor{white}{NORDIC}}
+  &    \includegraphics[width=3cm]{images/sub-001_ses-1_task-REST_run-1_OC_part-mag_bold_nordic_tsnr_all.jpg} &\includegraphics[width=3cm]{images/sub-001_ses-1_task-REST_run-1_OCspc_part-mag_bold_nordic_all} &\\
+       \rotatebox[origin=l]{90}{\textcolor{white}{HYDRA}}
+  &    \includegraphics[width=3cm]{images/sub-001_ses-1_task-REST_run-1_OC_part-mag_bold_hydra_tsnr_all.jpg} &\includegraphics[width=3cm]{images/sub-001_ses-1_task-REST_run-1_OCspc_part-mag_bold_hydra_all} &\\
+       \rotatebox[origin=l]{90}{\textcolor{white}{TMPPCA}}
+  &    \includegraphics[width=3cm]{images/sub-001_ses-1_task-REST_run-1_OC_part-mag_bold_tmppca_tsnr_all.jpg} &\includegraphics[width=3cm]{images/sub-001_ses-1_task-REST_run-1_OCspc_part-mag_bold_tmppca_all} &\textcolor{white}{$\Delta \%$} \includegraphics[width=.5cm]{images/SPC.png}\\
+    \end{tabular}
+    }
+    \caption[tSNR  maps, High Resolution]{tSNR maps at high spatial resolution (1.5 mm isotropic) are displayed with an upper saturation threshold of 100 arbitrary units. The left panel depicts tSNR maps for each denoising strategy. These maps demonstrate that thermal denoising increases tSNR, as reflected by the higher degree of saturation. In agreement with the findings from the 2.4 mm isotropic dataset, NORDIC produce higher tSNR values than MPPCA, whereas TMPPCA yields the highest tSNR among all evaluated denoising methods. Surprisingly, at higher resolution HYDRA unperform NORDIC, we suspect this to be a consequence of the forced spatal redundancy. The tSNR enhancement is particularly evident in deeper brain regions with TMPPCA, especially within white matter, indicating that TMPPCA can improve the feasibility of functional and structural investigations targeting these areas at high resolution. The right panel shows $\Delta \% \mathrm{tSNR}$ maps, which represent the percentage change in tSNR relative to the vanilla (non-denoised) dataset used as the baseline. These maps further corroborate the superior performance of TMPPCA over the other denoising approaches, as indicated by the larger spatial extent and magnitude of saturation.}
+    \label{fig:tsnrHR}
+\end{figure}
+%-- scatterplot
+\begin{figure}[htbp]
+\centering \colorbox{white}{
+    \centering
+    \begin{tabular}{>{\centering\arraybackslash}m{.7cm}>{\centering\arraybackslash}m{2cm}>{\centering\arraybackslash}m{2cm}>{\centering\arraybackslash}m{2cm}>{\centering\arraybackslash}m{2cm}}
+       & \textcolor{black}{\textbf{MPPCA}}
+       & \textcolor{black}{\textbf{NORDIC}}
+       & \textcolor{black}{\textbf{HYDRA}}
+       & \textcolor{black}{\textbf{TMPPCA}}\\
+       \rotatebox[origin=l]{90}{\textcolor{black}{sub-001}}& \includegraphics[width=2cm]{images/sub-001_vanilla_vs_mppca_tsnr_scatterHR.png}
+       & \includegraphics[width=2cm]{images/sub-001_vanilla_vs_nordic_tsnr_scatterHR.png}
+       & \includegraphics[width=2cm]{images/sub-001_vanilla_vs_hydra_tsnr_scatterHR.png}
+       & \includegraphics[width=2cm]{images/sub-001_vanilla_vs_tmppca_tsnr_scatterHR.png}
+       \end{tabular}
+    }
+    \caption[tSNR scatterplots at high spatial resolution (1.5 mm isotropic)]{tSNR scatterplots are presented for each subject (1.5 mm isotropic resolution), comparing baseline (“vanilla”) tSNR values with those obtained following each denoising strategy. Vanilla tSNR values are displayed on the x-axis, while the corresponding tSNR values after application of each denoising method are shown on the y-axis. In the absence of any denoising benefit, the data points are expected to align closely with the identity line (red line), indicating a linear relationship with unit slope and no systematic deviation. Deviations of the point cloud from this identity line (either above or below) quantify the voxelwise magnitude and direction of tSNR change. Consistent with the qualitative impressions from the tSNR maps, NORDIC and TMPPCA increase tSNR, whereas MPPCA show some decrease in some voxels. In particular, HYDRA shows no observable improvement at all, whereas TMPPCA exhibits a pronounced positive shift, with the scatter markedly skewed towards higher tSNR values, indicating a substantial per-voxel improvement in tSNR.}
+    \label{fig:scatterHR}
+\end{figure}
+
+The 1.5 mm dataset differs from its coarser counterparts in two key respects: its higher spatial resolution places it within a low SNR regime, and its acquisition time was 3.5 times longer. Consequently, a distinct pattern emerged compared to the high SNR datasets (Fig.~\ref{fig:tsnrHR}). Here, NORDIC improved tSNR relative to both vanilla and MPPCA, whereas HYDRA did not yield a comparable enhancement. This discrepancy likely arises because the spatial redundancy from concatenating echoes may mix thermal noise variance with the signal of interest, causing the $\lambda$ threshold to undershoot the true noise floor.
+
+As observed in the lower-resolution datasets, the $\Delta\%tSNR$ maps were again predominantly positively saturated, with TMPPCA exhibiting changes $\geqslant50\%$. However, improvements near zero were also observed across all methods, though these were least persistent for TMPPCA. The distribution of tSNR and $\Delta\%tSNR$ values further indicated that NORDIC and HYDRA enhanced tSNR more consistently than MPPCA (Fig.~\ref{fig:tsnrDistribution}).
+
+Scatterplot analysis of per-voxel tSNR values corroborated these observations (Fig.~\ref{fig:scatterHR}). MPPCA yielded lower tSNR values for a subset of voxels, while HYDRA produced only modest voxel-wise improvements. NORDIC consistently increased tSNR values, yet TMPPCA substantially outperformed all other methods on a per-voxel basis, establishing itself as the most reliable technique for thermal denoising in multi-echo acquisitions.
+
+Collectively, these findings demonstrate that in the low SNR regime characteristic of high spatial resolution acquisitions—where thermal noise predominates—TMPPCA constitutes the most effective approach for enhancing signal quality while capitalizing on the multicontrast nature of multi-echo fMRI data.
+
+
+
+
+\subsection{Relaxation times ($R_2^*$)}
+%%%%%%-------
+% -----------R 2
+% -----------
+%%%%%%-------
+\begin{figure}[htbp]
+\centering \colorbox{black}{
+    \centering
+    \begin{tabular}{>{\centering\arraybackslash}m{.7cm}>{\centering\arraybackslash}m{3cm}>{\centering\arraybackslash}m{3cm}>{\centering\arraybackslash}m{.7cm}}
+    
+       & \textcolor{white}{\textbf{$\overline{R_2^*}$}} & \textcolor{white}{\textbf{$\Delta\%\overline{R_2^*}$}}& \\
+   \rotatebox[origin=l]{90}{\textcolor{white}{VANILLA}}
+  &    \includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1200_R2mean_part-mag_bold_vanilla_all.jpg} & & \textcolor{white}{$R_2^*$} \includegraphics[width=.5cm]{images/Plasmar2.png}\\
+     \rotatebox[origin=l]{90}{\textcolor{white}{MPPCA}}
+  &    \includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1200_R2mean_part-mag_bold_mppca_all} &\includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1200_R2meanSPC_part-mag_bold_mppca_all} &\\
+       \rotatebox[origin=l]{90}{\textcolor{white}{NORDIC}}
+  &    \includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1200_R2mean_part-mag_bold_nordic_all.jpg} &\includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1200_R2meanSPC_part-mag_bold_nordic_all} &\\
+       \rotatebox[origin=l]{90}{\textcolor{white}{HYDRA}}
+  &    \includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1200_R2mean_part-mag_bold_hydra_all.jpg} &\includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1200_R2meanSPC_part-mag_bold_hydra_all} &\\
+       \rotatebox[origin=l]{90}{\textcolor{white}{TMPPCA}}
+  &    \includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1200_R2mean_part-mag_bold_tmppca_all.jpg} &\includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1200_R2meanSPC_part-mag_bold_tmppca_all} &\textcolor{white}{$\Delta \%$} \includegraphics[width=.5cm]{images/SPC.png}\\
+    \end{tabular}
+    }
+        \caption[$\overline{R_2^*}$  maps, low resolution (2.4 mm isotropic)]{$\overline{R_2^*}$ maps at low spatial resolution (2.4 mm isotropic) are displayed with an upper saturation threshold of 70 seconds. The left panel depicts $\overline{R_2^*}$ maps for each denoising strategy. These maps demonstrate that thermal denoising does not affect substantially $\overline{R_2^*}$ estimation after optimal combination of echoes. The right panel shows $\Delta \% \mathrm{\overline{R_2^*}}$ maps, which represent the percentage change in $\overline{R_2^*}$ relative to the vanilla (non-denoised) dataset used as the baseline. These maps further corroborate that if any small change in $\overline{R_2^*}$ is present, is nearly neglectful as compared bu the large presence of puple color which is close to $0\%$, thus NORDIC and HYDRA show the tendency to overestimate $\overline{R_2^*}$.}
+    \label{fig:R21200}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering \colorbox{black}{
+    \centering
+    \begin{tabular}{>{\centering\arraybackslash}m{.7cm}>{\centering\arraybackslash}m{3cm}>{\centering\arraybackslash}m{3cm}>{\centering\arraybackslash}m{.7cm}}
+    
+       & \textcolor{white}{\textbf{$\overline{R_2^*}$}} & \textcolor{white}{\textbf{$\Delta \%\overline{R_2^*}$}}& \\
+   \rotatebox[origin=l]{90}{\textcolor{white}{VANILLA}}
+  &    \includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1700_R2mean_part-mag_bold_vanilla_all.jpg} & & \textcolor{white}{$R_2^*$} \includegraphics[width=.5cm]{images/Plasmar2.png}\\
+     \rotatebox[origin=l]{90}{\textcolor{white}{MPPCA}}
+  &    \includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1700_R2mean_part-mag_bold_mppca_all} &\includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1700_R2meanSPC_part-mag_bold_mppca_all} &\\
+       \rotatebox[origin=l]{90}{\textcolor{white}{NORDIC}}
+  &    \includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1700_R2mean_part-mag_bold_nordic_all.jpg} &\includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1700_R2meanSPC_part-mag_bold_nordic_all} &\\
+       \rotatebox[origin=l]{90}{\textcolor{white}{HYDRA}}
+  &    \includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1700_R2mean_part-mag_bold_hydra_all.jpg} &\includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1700_R2meanSPC_part-mag_bold_hydra_all} &\\
+       \rotatebox[origin=l]{90}{\textcolor{white}{TMPPCA}}
+  &    \includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1700_R2mean_part-mag_bold_tmppca_all.jpg} &\includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1700_R2meanSPC_part-mag_bold_tmppca_all} &\textcolor{white}{$\Delta \%$} \includegraphics[width=.5cm]{images/SPC.png}\\
+    \end{tabular}
+    }
+    \caption[$\overline{R_2^*}$ maps, low resolution (2 mm isotropic)]{$\overline{R_2^*}$ maps at low spatial resolution (2 mm isotropic) are displayed with an upper saturation threshold of 70 seconds. The left panel depicts $\overline{R_2^*}$ maps for each denoising strategy. These maps demonstrate that thermal denoising does not affect substantially $\overline{R_2^*}$ estimation after optimal combination of echoes. The right panel shows $\Delta \% \mathrm{\overline{R_2^*}}$ maps, which represent the percentage change in $\overline{R_2^*}$ relative to the vanilla (non-denoised) dataset used as the baseline. These maps further corroborate that if any small change in $\overline{R_2^*}$ is present, is nearly neglectful as compared bu the large presence of puple color which is close to $0\%$, thus NORDIC and HYDRA show the tendency to overestimate $\overline{R_2^*}$.}
+    \label{fig:R21700}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering \colorbox{black}{
+    \centering
+    \begin{tabular}{>{\centering\arraybackslash}m{.7cm}>{\centering\arraybackslash}m{3cm}>{\centering\arraybackslash}m{3cm}>{\centering\arraybackslash}m{.7cm}}
+    
+       & \textcolor{white}{\textbf{$\overline{R_2^*}$}} & \textcolor{white}{\textbf{$\Delta \% \overline{R_2^*}$}}& \\
+   \rotatebox[origin=l]{90}{\textcolor{white}{VANILLA}}
+  &    \includegraphics[width=3cm]{images/sub-001_ses-1_task-REST_run-1_R2mean_part-mag_bold_vanilla_all.jpg} & & \textcolor{white}{$R_2^*$} \includegraphics[width=.5cm]{images/Plasmar2.png}\\
+     \rotatebox[origin=l]{90}{\textcolor{white}{MPPCA}}
+  &    \includegraphics[width=3cm]{images/sub-001_ses-1_task-REST_run-1_R2mean_part-mag_bold_mppca_all} &\includegraphics[width=3cm]{images/sub-001_ses-1_task-REST_run-1_R2meanSPC_part-mag_bold_mppca_all} &\\
+       \rotatebox[origin=l]{90}{\textcolor{white}{NORDIC}}
+  &    \includegraphics[width=3cm]{images/sub-001_ses-1_task-REST_run-1_R2mean_part-mag_bold_nordic_all.jpg} &\includegraphics[width=3cm]{images/sub-001_ses-1_task-REST_run-1_R2meanSPC_part-mag_bold_nordic_all} &\\
+       \rotatebox[origin=l]{90}{\textcolor{white}{HYDRA}}
+  &    \includegraphics[width=3cm]{images/sub-001_ses-1_task-REST_run-1_R2mean_part-mag_bold_hydra_all.jpg} &\includegraphics[width=3cm]{images/sub-001_ses-1_task-REST_run-1_R2meanSPC_part-mag_bold_hydra_all} &\\
+       \rotatebox[origin=l]{90}{\textcolor{white}{TMPPCA}}
+  &    \includegraphics[width=3cm]{images/sub-001_ses-1_task-REST_run-1_R2mean_part-mag_bold_tmppca_all.jpg} &\includegraphics[width=3cm]{images/sub-001_ses-1_task-REST_run-1_R2meanSPC_part-mag_bold_tmppca_all} &\textcolor{white}{$\Delta \%$} \includegraphics[width=.5cm]{images/SPC.png}\\
+    \end{tabular}
+    }
+    \caption[$\overline{R_2^*}$  maps, high resolution (1.5 mm)]{$\overline{R_2^*}$ maps at high spatial resolution (2 mm isotropic) are displayed with an upper saturation threshold of 70 seconds. The left panel depicts $\overline{R_2^*}$ maps for each denoising strategy. These maps demonstrate that thermal denoising slightly affects $\overline{R_2^*}$ estimation after optimal combination of echoes in the low SNR dataset, specially on the ventricles where there exist a big underestimation. The right panel shows $\Delta \% \mathrm{\overline{R_2^*}}$ maps, which represent the percentage change in $\overline{R_2^*}$ relative to the vanilla (non-denoised) dataset used as the baseline. These maps further corroborate that if small changes in $\overline{R_2^*}$ are present in white and gray-matter as stated by the large presence of purple color which is close to $0\%$, thus NORDIC show the tendency to slightly overestimate $\overline{R_2^*}$ on frontal, temporal and parietal areas.}
+    \label{fig:R2HR}
+\end{figure}
+%-- boxplots
+%-- R2
+\begin{figure}[htbp]
+\centering \colorbox{white}{
+    \centering
+    \begin{tabular}{>{\centering\arraybackslash}m{.7cm}>{\centering\arraybackslash}m{6cm}}
+       & \textcolor{black}{\textbf{$\overline{R_2^*}$ Distribution Across methods}} \\
+    \rotatebox[origin=l]{90}{\textcolor{black}{2.4 mm}} &    \includegraphics[width=6cm]{images/halfviolin_r2star_across_subjects_masked1200.png}\\
+       \rotatebox[origin=l]{90}{\textcolor{black}{2 mm}} & \includegraphics[width=6cm]{images/halfviolin_r2star_across_subjects_masked1700.png}\\
+      \rotatebox[origin=l]{90}{\textcolor{black}{1.5 mm}}&   \includegraphics[width=6cm]{images/halfviolin_r2star_across_subjects_maskedHR.png}   \\
+    \end{tabular}
+    }
+    \centering
+    \caption[Distribution of $\overline{R_2^*}$ values per dataset]{Distribution of $\overline{R_2^*}$ values per dataset each each method in different color, we can appreciate overall how in all datasets, distribution of $\overline{R_2^*}$ is largely similar between denoised timeseries and de un-denoised one. This leads us to think that the tested strategies are removing mainly variance of not interest as they are not affecting $\overline{R_2^*}$ baseline which is crucial for detecting BOLD activity.}
+    \label{fig:R2mean}
+\end{figure}
+%-- Delta R2
+\begin{figure}[htbp]
+\centering \colorbox{white}{
+    \centering
+    \begin{tabular}{>{\centering\arraybackslash}m{.7cm}>{\centering\arraybackslash}m{5cm}>{\centering\arraybackslash}m{5cm}}
+       & \textcolor{black}{\textbf{$\Delta R_2^*$}} & \textcolor{black}{\textbf{Plausible vs. Implausible}} \\
+    \rotatebox[origin=l]{90}{\textcolor{black}{2.4 mm}} &    \includegraphics[width=5cm]{images/subject_smoothed_histograms1200.png} &
+        \includegraphics[width=5cm]{images/plausibility_paired_violin1200.png}\\
+       \rotatebox[origin=l]{90}{\textcolor{black}{2 mm}} & \includegraphics[width=5cm]{images/subject_smoothed_histograms1700.png}&\includegraphics[width=5cm]{images/plausibility_paired_violin1700.png} \\
+      \rotatebox[origin=l]{90}{\textcolor{black}{1.5 mm}}&   \includegraphics[width=5cm]{images/subject_smoothed_histogramsHR.png}&\includegraphics[width=5cm]{images/plausibility_paired_violinHR.png} \\
+    \end{tabular}
+    }
+    \centering
+    \caption[Distribution of $\Delta R_2^*$ values per dataset]{Distribution of $\Delta R_2^*$ values per dataset as a function of their corresponding $\overline{R_2^*}$ estimates. The left panel displays smoothed histograms for all datasets, with the distribution for each denoising strategy color-coded within a biologically plausible interval of $[-1, 1]$ seconds. This temporal window corresponds to plausible lags of a fast hemodynamic response function, such as those typically observed in BOLD responses. For the low-resolution multi-subject datasets, individual subjects are represented by distinct shades of the same color. 
+
+Overall, TMPPCA yields a larger number of data points within the biologically plausible range, particularly when compared to the VANILLA (blue) histograms, suggesting that the variance removed by TMPPCA predominantly reflects non-neuronal or otherwise non-interest signal components. NORDIC constitutes the second most effective strategy in this regard. 
+
+The right panel shows a binary classification of $\Delta R_2^*$ estimates as biologically plausible (green) or implausible (red). All denoising strategies increase the proportion of plausible estimates relative to the undenoised data; however, TMPPCA produces the largest improvement and clearly outperforms the other approaches.}
+    \label{fig:plausabilityR2}
+\end{figure}
+To assess whether thermal denoising affects the physiological plausibility of the fMRI signal, we performed a $\overline{R_2^*}$ analysis. Given that fMRI relies on changes in $T_2^*$ decay, accurately estimating relaxation times is critical for detecting BOLD signal changes. We first sought to determine whether $\overline{R_2^*}$ estimates differed across denoising methods. If a denoising technique removes only random variance arising from thermal sources, the resulting $\overline{R_2^*}$ estimates should remain comparable to those obtained from the vanilla condition. Consequently, evidence of changes in $\overline{\Delta R_2^*}$ relative to vanilla would indicate that the overall signal range has been altered, suggesting the addition—or removal—of signal components.
+
+Across all $\overline{R_2^*}$ brain maps from the three datasets (2.4 mm, Fig.~\ref{fig:R21200}; 2 mm, Fig.~\ref{fig:R21700}; and 1.5 mm, Fig.~\ref{fig:R2HR}), the observed changes were almost negligible (Fig.~\ref{fig:R2mean}). Nevertheless, a consistent pattern emerged. NORDIC consistently overestimated $\overline{R_2^*}$, whereas MPPCA tended to underestimate it. Discrepancies between methods and the vanilla condition were most pronounced in frontal areas, which are also furthest from the receive coils. Notably, both MPPCA and TMPPCA exhibited the smallest overall changes, though with a predisposition toward signal underestimation in frontal regions. HYDRA, consistent with the tSNR findings, showed a pattern similar to NORDIC in the high SNR datasets, while more closely resembling MPPCA in the low SNR dataset.
+
+We next conducted a more fine-grained analysis of temporal changes in relaxation times. Such fluctuations may reflect hemodynamic processes if their characteristics are physiologically  plausible lags of a fast hemodynamic response function, such as those typically observed in BOLD responses (Fig.~\ref{fig:plausabilityR2}) \citep{uludagIntegrativeModelNeuronal2009a, uludagLinkingBrainVascular2018, dezwartTemporalDynamicsBOLD2005} . Across datasets, thermal denoising effectively increased the proportion of plausible signal values. Smoothed histograms (Fig.~\ref{fig:plausabilityR2}) revealed that as voxel resolution increased, the advantages of TMPPCA over the other denoising methods became more pronounced. Notably, NORDIC and HYDRA did not demonstrate a clear advantage over MPPCA in this regard. To our knowledge, this is the first study to evaluate NORDIC using a relaxation-based analysis.
+
+Collectively, these findings indicate that TMPPCA not only improves the SNR of multi-echo fMRI datasets but does so in a physiologically plausible manner. This provides confidence that the enhanced signal quality reflects genuine changes in brain tissue magnetization, likely arising from hemodynamic processes.
+
+
+
+%%%%%%-------
+% -----------S 0
+% -----------
+%%%%%%-------
+
+\begin{figure}[htbp]
+\centering \colorbox{black}{
+    \centering
+    \begin{tabular}{>{\centering\arraybackslash}m{.7cm}>{\centering\arraybackslash}m{3cm}>{\centering\arraybackslash}m{3cm}>{\centering\arraybackslash}m{.7cm}}
+    
+       & \textcolor{white}{\textbf{$S_0$}} & \textcolor{white}{\textbf{$\Delta \%S_0$}}& \\
+   \rotatebox[origin=l]{90}{\textcolor{white}{VANILLA}}
+  &    \includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1200_S0mean_part-mag_bold_vanilla_all.jpg} & & \textcolor{white}{$S_0$} \includegraphics[width=.5cm]{images/Plasmas0.png}\\
+     \rotatebox[origin=l]{90}{\textcolor{white}{MPPCA}}
+  &    \includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1200_S0mean_part-mag_bold_mppca_all} &\includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1200_S0meanSPC_part-mag_bold_mppca_all} &\\
+       \rotatebox[origin=l]{90}{\textcolor{white}{NORDIC}}
+  &    \includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1200_S0mean_part-mag_bold_nordic_all.jpg} &\includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1200_S0meanSPC_part-mag_bold_nordic_all} &\\
+       \rotatebox[origin=l]{90}{\textcolor{white}{HYDRA}}
+  &    \includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1200_S0mean_part-mag_bold_hydra_all.jpg} &\includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1200_S0meanSPC_part-mag_bold_hydra_all} &\\
+       \rotatebox[origin=l]{90}{\textcolor{white}{TMPPCA}}
+  &    \includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1200_S0mean_part-mag_bold_tmppca_all.jpg} &\includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1200_S0meanSPC_part-mag_bold_tmppca_all} &\textcolor{white}{$\Delta \%$} \includegraphics[width=.5cm]{images/SPC.png}\\
+    \end{tabular}
+    }
+    \caption[$S_0^$ maps at low resolution (2.4 mm isotropic)]{$S_0$ maps  at low spatial resolution (2.4 mm isotropic) to estimate the net brain magnetization following optimal combination of the multi-echo data. The left panel displays $S_0$ brain maps, where increased saturation reflects higher signal intensity. Qualitatively, no substantial differences in $S_0$ estimates are observed across methods. Given the $T_2$-weighted combination algorithm, this suggests that the underlying signal contributions across echoes remain largely consistent regardless of the denoising strategy. The right panel shows the relative difference, $\Delta \%S_0$, between each strategy and the vanilla approach. Overall, only negligible changes are observed. In frontal regions and white matter, NORDIC and HYDRA exhibit slight overestimations, whereas MPPCA and TMPPCA exhibit underestimations. This is consistent with the $\overline{T_2^*}$ analysis that revealed a comparable spatial pattern in these areas. }
+    \label{fig:S01200}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering \colorbox{black}{
+    \centering
+    \begin{tabular}{>{\centering\arraybackslash}m{.7cm}>{\centering\arraybackslash}m{3cm}>{\centering\arraybackslash}m{3cm}>{\centering\arraybackslash}m{.7cm}}
+    
+       & \textcolor{white}{\textbf{$S_0$}} & \textcolor{white}{\textbf{$\Delta \%S_0$}}& \\
+   \rotatebox[origin=l]{90}{\textcolor{white}{VANILLA}}
+  &    \includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1700_S0mean_part-mag_bold_vanilla_all.jpg} & & \textcolor{white}{$S_0$} \includegraphics[width=.5cm]{images/Plasmas0.png}\\
+     \rotatebox[origin=l]{90}{\textcolor{white}{MPPCA}}
+  &    \includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1700_S0mean_part-mag_bold_mppca_all} &\includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1700_S0meanSPC_part-mag_bold_mppca_all} &\\
+       \rotatebox[origin=l]{90}{\textcolor{white}{NORDIC}}
+  &    \includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1700_S0mean_part-mag_bold_nordic_all.jpg} &\includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1700_S0meanSPC_part-mag_bold_nordic_all} &\\
+       \rotatebox[origin=l]{90}{\textcolor{white}{HYDRA}}
+  &    \includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1700_S0mean_part-mag_bold_hydra_all.jpg} &\includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1700_S0meanSPC_part-mag_bold_hydra_all} &\\
+       \rotatebox[origin=l]{90}{\textcolor{white}{TMPPCA}}
+  &    \includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1700_S0mean_part-mag_bold_tmppca_all.jpg} &\includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1700_S0meanSPC_part-mag_bold_tmppca_all} &\textcolor{white}{$\Delta \%$} \includegraphics[width=.5cm]{images/SPC.png}\\
+    \end{tabular}
+    }
+    \caption[$S_0^$  maps at low resolution (2 mm isotropic)]{$S_0$ maps  at low spatial resolution (2 mm isotropic) to estimate the net brain magnetization following optimal combination of the multi-echo data. The left panel displays $S_0$ brain maps, where increased saturation reflects higher signal intensity. Qualitatively, no substantial differences in $S_0$ estimates are observed across methods. Given the $T_2$-weighted combination algorithm, this suggests that the underlying signal contributions across echoes remain largely consistent regardless of the denoising strategy. The right panel shows the relative difference, $\Delta \%S_0$, between each strategy and the vanilla approach. Overall, only negligible changes are observed.  In frontal regions and white matter, NORDIC and HYDRA exhibit slight overestimations, whereas MPPCA and TMPPCA exhibit underestimations. This is consistent with the $\overline{T_2^*}$ analysis that revealed a comparable spatial pattern in these areas.}
+    \label{fig:S01700}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering \colorbox{black}{
+    \centering
+    \begin{tabular}{>{\centering\arraybackslash}m{.7cm}>{\centering\arraybackslash}m{3cm}>{\centering\arraybackslash}m{3cm}>{\centering\arraybackslash}m{.7cm}}
+    
+       & \textcolor{white}{\textbf{$S_0$}} & \textcolor{white}{\textbf{$\Delta \%S_0$}}& \\
+   \rotatebox[origin=l]{90}{\textcolor{white}{VANILLA}}
+  &    \includegraphics[width=3cm]{images/sub-001_ses-1_task-REST_run-1_S0mean_part-mag_bold_vanilla_all.jpg} & & \textcolor{white}{$S_0$} \includegraphics[width=.5cm]{images/Plasmas0.png}\\
+     \rotatebox[origin=l]{90}{\textcolor{white}{MPPCA}}
+  &    \includegraphics[width=3cm]{images/sub-001_ses-1_task-REST_run-1_S0mean_part-mag_bold_mppca_all} &\includegraphics[width=3cm]{images/sub-001_ses-1_task-REST_run-1_S0meanSPC_part-mag_bold_mppca_all} &\\
+       \rotatebox[origin=l]{90}{\textcolor{white}{NORDIC}}
+  &    \includegraphics[width=3cm]{images/sub-001_ses-1_task-REST_run-1_S0mean_part-mag_bold_nordic_all.jpg} &\includegraphics[width=3cm]{images/sub-001_ses-1_task-REST_run-1_S0meanSPC_part-mag_bold_nordic_all} &\\
+       \rotatebox[origin=l]{90}{\textcolor{white}{HYDRA}}
+  &    \includegraphics[width=3cm]{images/sub-001_ses-1_task-REST_run-1_S0mean_part-mag_bold_hydra_all.jpg} &\includegraphics[width=3cm]{images/sub-001_ses-1_task-REST_run-1_S0meanSPC_part-mag_bold_hydra_all} &\\
+       \rotatebox[origin=l]{90}{\textcolor{white}{TMPPCA}}
+  &    \includegraphics[width=3cm]{images/sub-001_ses-1_task-REST_run-1_S0mean_part-mag_bold_tmppca_all.jpg} &\includegraphics[width=3cm]{images/sub-001_ses-1_task-REST_run-1_S0meanSPC_part-mag_bold_tmppca_all} &\textcolor{white}{$\Delta \%$} \includegraphics[width=.5cm]{images/SPC.png}\\
+    \end{tabular}
+    }
+    \caption[$S_0^$  maps at high resolution (1.5 mm isotropic)]{$S_0$ maps at high resolution (1.5 mm isotropic) $S_0$ maps  at high spatial resolution (1.5 mm isotropic) to estimate the net brain magnetization following optimal combination of the multi-echo data. The left panel displays $S_0$ brain maps, where increased saturation reflects higher signal intensity. Qualitatively, no substantial differences in $S_0$ estimates are observed across methods. Given the $T_2$-weighted combination algorithm, this suggests that the underlying signal contributions across echoes remain largely consistent regardless of the denoising strategy. The right panel shows the relative difference, $\Delta \%S_0$, between each strategy and the vanilla approach. Overall, only negligible changes are observed. In frontal regions and white matter, NORDIC exhibit slight overestimations, whereas HYDRA, MPPCA and TMPPCA exhibit underestimations. This is consistent with the $\overline{T_2^*}$ analysis that revealed a comparable spatial pattern in these areas. Noteworthy, this pattern where only NORDIC exhibits results in different directions as the other strategies only occurs in the dataset with low SNR.}
+    \label{fig:S0hr}
+\end{figure}
+
+%-- boxplot
+
+\begin{figure}[htbp]
+\centering \colorbox{white}{
+    \centering
+    \begin{tabular}{>{\centering\arraybackslash}m{.7cm}>{\centering\arraybackslash}m{5cm}>{\centering\arraybackslash}m{5cm}}
+       & \textcolor{black}{\textbf{$S0$}} & \textcolor{black}{\textbf{$\Delta \%S_0$}} \\
+    \rotatebox[origin=l]{90}{\textcolor{black}{2.4 mm}} &    \includegraphics[width=5cm]{images/halfviolin_s0_across_subjects_masked1200.png} &
+        \includegraphics[width=5cm]{images/halfviolin_s0spc_across_subjects_masked1200.png}\\
+       \rotatebox[origin=l]{90}{\textcolor{black}{2 mm}} & \includegraphics[width=5cm]{images/halfviolin_s0_across_subjects_masked1700.png}&\includegraphics[width=5cm]{images/halfviolin_s0spc_across_subjects_masked1700.png} \\
+      \rotatebox[origin=l]{90}{\textcolor{black}{1.5 mm}}&   \includegraphics[width=5cm]{images/halfviolin_s0_across_subjects_maskedHR.png}&\includegraphics[width=5cm]{images/halfviolin_s0spc_across_subjects_maskedHR.png} \\
+    \end{tabular}
+    }
+    \centering
+    \caption[Distribution of $S0$ values per dataset]{Distribution of $S0$ values per dataset. On the left panel, distribution of $S0$ values per dataset each method in different color, we can appreciate how in all datasets, distribution of $S_0$ is largely similar between denoised timeseries and un-denoised one. On the right panel, distribution of $\Delta \%S_0$  between denoising strategies when compared with vanilla. Noteworthy TMPPCA exhibits the smallest $\Delta \%S_0$ changes overall, which in addition with $\overline{R_2^*}$ strongly suggest that variance removed comes from non biological sources.}
+    \label{fig:boxplotS0}
+\end{figure}
+
+To assess whether the denoising methods under investigation alter the estimation of net magnetization, we compared the arbitrary $S_0$ values derived from TEDANA. As expected, across all three datasets (2.4 mm, Fig.~\ref{fig:S01200}; 2 mm, Fig.~\ref{fig:S01700}; 1.5 mm, Fig.~\ref{fig:S0hr}), brain regions characterized by lower SNR due to their distance from the receive coils exhibited lower $S_0$ estimates. Conversely, areas proximal to the coils displayed the highest signal intensity, consistent with their higher SNR profile.
+
+Examining signal change between the vanilla and denoised conditions revealed a consistent pattern across the high SNR datasets. For the 2.4 mm and 2 mm resolutions, NORDIC and HYDRA yielded slight increases in $S_0$ signal intensity near the ventricles and toward the temporal lobes, whereas MPPCA and TMPPCA showed modest signal decreases in these same regions. For the 1.5 mm dataset, only NORDIC produced a slight signal increase, while all other methods exhibited comparable signal decreases.
+
+Despite these regional variations, the overall distribution of $S_0$ values remained remarkably similar across all datasets and denoising methods (Fig.~\ref{fig:boxplotS0}). Minor changes were nonetheless evident in the $\Delta S_0$ histograms, which revealed that while all methods produced generally negligible changes, TMPPCA exhibited the smallest distribution tails.
+
+This analysis suggests that all denoising methods yield comparable $S_0$ estimates, indicating that the denoising process does not substantially affect this fundamental parameter—the origin of signal estimation for optimal combination (see Fig.~\ref{fig:S0T2ME}).
+
+Collectively, these findings demonstrate that TMPPCA constitutes the most effective strategy for increasing SNR in multi-echo acquisitions, while introducing no major alterations to key signal estimates such as $S_0$ and $\overline{R_2^*}$.
+
+
+
+
+% Reliability
+
+\subsection{Functional Connectivity Reliability Analysis}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=6cm]{images/reliability.pdf}
+    \caption[Functional Connectivity Reliability Measurement]{Functional Connectivity Reliability Measurement. First, the fMRI volumes are reshaped into a matrix of dimensions voxels × time. The resulting time series is then partitioned into two halves. For each half, functional connectivity (FC) is computed as the correlation between the time series of each voxel and those of all other voxels, yielding a voxelwise FC matrix. Finally, the corresponding FC matrices from the two halves are correlated on a per-voxel basis, producing a vector of reliability coefficients.}
+    \label{fig:FCreliability}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering \colorbox{black}{
+    \centering
+    \begin{tabular}{>{\centering\arraybackslash}m{1cm}>{\centering\arraybackslash}m{3cm}>{\centering\arraybackslash}m{3cm}}
+       & \textcolor{white}{\textbf{VANILLA}} & \textcolor{white}{\textbf{MPPCA}} \\
+    &    \includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1200_OC_part-mag_bold_vanilla01_all.jpg} &
+        \includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1200_OC_part-mag_bold_mppca01_all.jpg}\\
+      &   \textcolor{white}{\textbf{NORDIC}}& \textcolor{white}{\textbf{HYDRA}}\\
+        \includegraphics[width=.5cm]{images/PlasmaR2.png}&\includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1200_OC_part-mag_bold_nordic01_all.jpg} &
+        \includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1200_OC_part-mag_bold_hydra01_all.jpg}\\
+          &       \multicolumn{2}{c}{\textcolor{white}{\textbf{TMPPCA}}}\\
+      &  \multicolumn{2}{c}{\includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1200_OC_part-mag_bold_tmppca01_all.jpg}} \\
+    \end{tabular}
+    }
+    \caption[Functional connectivity reliability maps at low resolution (2.4 mm isotropic)]{Functional connectivity reliability maps at low spatial resolution (2.4 mm isotropic) are shown for each denoising strategy. As anticipated, the highest coefficients ($r^{2}$) were obtained in this dataset, consistent with its comparatively low spatial resolution. Overall, $r^{2}$ values increase following thermal denoising according to the sequence: vanilla $<$ MPPCA $<$ HYDRA $<$ NORDIC $<$ TMPPCA. An additional noteworthy pattern was observed: in the undenoised data, the highest $r^{2}$ values are localized primarily in regions of elevated signal intensity proximal to the head coils. As the efficacy of the denoising method increases, the spatial extent of $r^{2}$ saturation progressively shifts and expands along the gray matter, which is indicative of improved signal fidelity following thermal noise suppression.}
+    \label{fig:reliability1200}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering \colorbox{black}{
+    \centering
+    \begin{tabular}{>{\centering\arraybackslash}m{1cm}>{\centering\arraybackslash}m{3cm}>{\centering\arraybackslash}m{3cm}}
+       & \textcolor{white}{\textbf{VANILLA}} & \textcolor{white}{\textbf{MPPCA}} \\
+    &    \includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1700_OC_part-mag_bold_vanilla01_all.jpg} &
+        \includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1700_OC_part-mag_bold_mppca01_all.jpg}\\
+      &   \textcolor{white}{\textbf{NORDIC}}& \textcolor{white}{\textbf{HYDRA}}\\
+        \includegraphics[width=.5cm]{images/PlasmaR2.png}&\includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1700_OC_part-mag_bold_nordic01_all.jpg} &
+        \includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1700_OC_part-mag_bold_hydra01_all.jpg}\\
+          &       \multicolumn{2}{c}{\textcolor{white}{\textbf{TMPPCA}}}\\
+      &  \multicolumn{2}{c}{\includegraphics[width=3cm]{images/sub-001_ses-1_task-HABLA1700_OC_part-mag_bold_tmppca01_all.jpg}} \\
+    \end{tabular}
+    }
+    \caption[Functional connectivity reliability maps at low resolution (2 mm isotropic)]{Functional connectivity reliability maps at low spatial resolution (2 mm isotropic) are shown for each denoising strategy. As in the 2.4 mm isotropic dataset, $r^{2}$ values increase following thermal denoising according to the sequence: vanilla $<$ MPPCA $<$ HYDRA $<$ NORDIC $<$ TMPPCA. An additional noteworthy pattern was observed: in the undenoised data, the highest $r^{2}$ values are localized primarily in regions of elevated signal intensity proximal to the head coils. As the efficacy of the denoising method increases, the spatial extent of $r^{2}$ saturation progressively shifts and expands along the gray matter, which is indicative of improved signal fidelity following thermal noise suppression. For this dataset, we start from a map with values close to 0, and after TMPPCA, we have a heavily saturated map.}
+    \label{fig:reliability1700}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering \colorbox{black}{
+    \centering
+    \begin{tabular}{>{\centering\arraybackslash}m{1cm}>{\centering\arraybackslash}m{3cm}>{\centering\arraybackslash}m{3cm}}
+    
+       & \textcolor{white}{\textbf{VANILLA}} & \textcolor{white}{\textbf{MPPCA}} \\
+    &    \includegraphics[width=3cm]{images/sub-001_ses-1_task-REST_run-1_OC_part-mag_bold_vanilla01_all.jpg} &
+        \includegraphics[width=3cm]{images/sub-001_ses-1_task-REST_run-1_OC_part-mag_bold_mppca01_all.jpg}\\
+      &   \textcolor{white}{\textbf{NORDIC}}& \textcolor{white}{\textbf{HYDRA}}\\
+        \includegraphics[width=.5cm]{images/PlasmaR2.png}&\includegraphics[width=3cm]{images/sub-001_ses-1_task-REST_run-1_OC_part-mag_bold_nordic01_all.jpg} &
+        \includegraphics[width=3cm]{images/sub-001_ses-1_task-REST_run-1_OC_part-mag_bold_hydra01_all.jpg}\\
+          &       \multicolumn{2}{c}{\textcolor{white}{\textbf{TMPPCA}}}\\
+      &  \multicolumn{2}{c}{\includegraphics[width=3cm]{images/sub-001_ses-1_task-REST_run-1_OC_part-mag_bold_tmppca01_all.jpg}} \\
+    \end{tabular}
+    }
+    \caption[Functional connectivity reliability maps at high resolution (1.5 mm isotropic)]{Functional connectivity reliability maps at low spatial resolution (1.5 mm isotropic) are presented for each denoising strategy. Consistent with the observations in the low-resolution datasets, the coefficient of determination ($r^{2}$) systematically increases after thermal denoising, following the sequence: vanilla $<$ MPPCA $<$ HYDRA $<$ NORDIC $<$ TMPPCA. As expected, this dataset yields the lowest $r^{2}$ values overall, which is consistent with its comparatively higher spatial resolution.
+An additional salient pattern was identified: in the non-denoised data, the highest $r^{2}$ values are predominantly localized to regions of elevated signal intensity in close proximity to the head coils. With increasing denoising efficacy, the spatial distribution of $r^{2}$ saturation progressively shifts and expands along the gray matter, indicative of enhanced signal fidelity following thermal noise suppression. The pronounced improvement observed between the non-denoised dataset and the TMPPCA-processed data strongly supports the feasibility of employing this denoising strategy to enhance data quality for functional connectivity analyses.}
+    \label{fig:reliabilityHR}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering 
+    \centering
+    \begin{tabular}{>{\centering\arraybackslash}m{.7cm}>{\centering\arraybackslash}m{5cm}>{\centering\arraybackslash}m{5cm}}
+       & \textcolor{black}{\textbf{$FC \ reliability \ (r^2)$}} & \textcolor{black}{$\Delta \%r^2$}\\
+    \rotatebox[origin=l]{90}{\textcolor{black}{2.4 mm}} &    \includegraphics[width=5cm]{images/halfviolin_r2_across_subjects_masked1200.png} & \includegraphics[width=5cm]{images/halfviolin_r2spc_across_subjects_masked1200.png}\\
+       \rotatebox[origin=l]{90}{\textcolor{black}{2 mm}} & \includegraphics[width=5cm]{images/halfviolin_r2_across_subjects_masked1700.png} & \includegraphics[width=5cm]{images/halfviolin_r2spc_across_subjects_masked1700.png}\\
+      \rotatebox[origin=l]{90}{\textcolor{black}{1.5 mm}}&   \includegraphics[width=5cm]{images/halfviolin_r2_across_subjects_maskedHR.png} & \includegraphics[width=5cm]{images/halfviolin_r2spc_across_subjects_maskedHR.png} \\
+    \end{tabular}
+    
+    \caption[Distribution of functional connectivity reliability values per dataset ($r^2$)]{Distribution of functional connectivity reliability values across datasets. The left panel shows the distribution of $r^2$ values for each dataset, with each denoising method indicated by a different color. Across all datasets, the distribution of $r^2$ values shifts toward higher reliability following thermal denoising, with TMPPCA consistently yielding the highest reliability values. This pattern is preserved for all participants in both the 2.4 mm and 2 mm isotropic datasets, indicating the robustness of all denoising strategies, and in particular of TMPPCA. The right panel depicts the distribution of $\Delta \%r^2$ between denoising strategies relative to the vanilla (un-denoised) condition. Although the range of percent change is comparable across methods and datasets, the TMPPCA distribution is more positively skewed, suggesting a more consistent improvement in reliability relative to the un-denoised data.}
+    \label{fig:reliabilityFC}
+\end{figure}
+
+We next investigated whether thermal denoising methods could enhance the reliability of functional connectivity (FC) mapping. The underlying premise is that reducing the random variance associated with thermal sources should yield more stable signal estimates, thereby facilitating more consistent characterizations of voxel-wise relationships (Fig.~\ref{fig:FCreliability}).
+
+At coarser spatial resolutions, the impact of thermal noise is diminished; consequently, motion constitutes a more prominent confound in FC analyses across all datasets (see Sec.~\ref{sec:noiseMRI}). As anticipated, reliability scores increased with voxel size, with the 2.4 mm dataset (Fig.~\ref{fig:reliability1200}) exhibiting higher reliability than the 2 mm dataset (Fig.~\ref{fig:reliability1700}), which in turn exceeded that of the 1.5 mm dataset (Fig.~\ref{fig:reliabilityHR}).
+
+Consistent with our expectations, thermal denoising improved FC reliability across all three datasets. We posit that this improvement stems from the reduction of non-neurobiological signal components, which enhances signal stability and renders voxel-wise relationships more readily characterizable. The highest reliability scores were observed in regions proximal to the receive coils—notably areas surrounding the occipital lobe and the central sulcus—where signal strength is inherently greater.
+
+A consistent pattern emerged across datasets regarding the relative efficacy of each denoising method (Fig.~\ref{fig:reliabilityFC}). For the high SNR datasets (2.4 mm and 2 mm), MPPCA yielded the smallest improvement, followed by NORDIC and HYDRA, with TMPPCA producing the greatest increase overall. This ranking remained unchanged for the low SNR dataset. The left panels of Fig.~\ref{fig:reliabilityFC} illustrate a monotonic increase in reliability across conditions (vanilla $<$ MPPCA $<$ HYDRA $<$ NORDIC $<$ TMPPCA). Correspondingly, the right panels reveal that the $\Delta r^2$ distributions are consistently and positively skewed.
+
+The FC reliability analysis was designed to assess signal stability within each denoising method. In essence, it tests whether the assumption of voxel-wise signal identity—that a given voxel exhibits a consistent signal profile across observations—holds more strongly after denoising. However, this analysis alone cannot determine whether the variance removed is indeed  thermal noise. This question motivated our independent preprocessing of split-half datasets, as detailed in the methods section (see Fig.~\ref{fig:preprocessing}).
+
+\begin{figure}
+    \centering
+    \includegraphics[width=11cm]{images/reliability_betweenruns.png}
+    \caption[Comparison of reliability estimates obtained from independently denoised data halves at high spatial resolution (1.5 mm isotropic)]{Comparison of reliability estimates obtained from independently denoised data halves at high spatial resolution (1.5 mm isotropic). The x-axis represents the different denoising methods, and the y-axis depicts the corresponding $r^2$ values. For each violin plot, the left side reflects the reliability scores derived from independently denoised data halves, whereas the right side represents the reliability scores obtained when the entire time series was denoised jointly. Overall, the reliability values are highly consistent across denoising pipelines, indicating that the choice of denoising strategy exerts minimal influence on reliability, as evidenced by the close correspondence between the two sides of each violin plot.}
+    \label{fig:placeholder}
+\end{figure}
+
+We conducted the independent reliability analysis exclusively on the 1.5 mm isotropic dataset, as this acquisition is arguably the most susceptible to thermal noise and thus to reductions in signal fidelity. Furthermore, the 30-minute length of the full time series allowed us to use the remaining 15-minute segments as independent datasets whose duration is consistent with typical scan lengths in contemporary research.
+
+We summarize the results by displaying only the distributions of $r^2$ values using violin plots. For each method, the left side of the violin plot (green) represents the distribution obtained with independent denoising, whereas the right side corresponds to the distribution obtained with non-independent denoising, as defined in the previous analyses. The two distributions within each violin plot show substantial overlap, with the non-independent condition exhibiting a slight shift toward higher $r^2$ values. This pattern is expected, as the noise estimates in the non-independent case are derived from the same time series used to compute reliability, whereas, importantly, estimating the noise floor on an independent time series yields comparable reliability scores. This indicates that the denoising strategies are robust in removing signals not of interest and in identifying them consistently across independent data segments.
+
+Of particular note, TMPPCA displays the smallest degree of overlap between independent and non-independent denoising. This is consistent with the fact that TMPPCA leverages temporal redundancy, such that larger datasets improve the precision of noise estimation. Overall, these observations support TMPPCA as the most reliable approach in terms of functional connectivity (FC) reliability.
+
+
+
+
+\section{Discussion}
+
+\begin{onehalfspace}
+    
+
+Multi-echo fMRI enhances signal quality by enabling the linear combination of information across multiple echoes, thereby improving the estimation of $T_2^*$ and $S_0$. This, in turn, increases sensitivity to neurophysiological changes of BOLD origin \citep{poser2006bold, kundu2017multi}.
+
+The current trend toward higher spatial resolution—achieved through smaller voxel sizes and faster sequences—necessitates strategies for improving signal quality. Integrating multi-echo acquisition with effective thermal denoising algorithms therefore represents a particularly valuable approach for maintaining BOLD sensitivity in high-resolution applications.
+
+Consistent with findings from single-echo acquisitions, we observed that random matrix-based denoising methods improve overall signal quality, as reflected in the tSNR distributions across all datasets (Fig.~\ref{fig:tsnrDistribution}) \citep{veraart2016denoising, zhu2022denoise, nigiImprovedNoiseReduction2023a, dowdle2023evaluating}. Among the methods evaluated, TMPPCA consistently yielded the most substantial tSNR improvements.
+
+A fundamental premise of multi-echo fMRI is that optimal echo combination relies on accurate, data-driven estimates of $T_2^*$ and $S_0$ (see Sec.~\ref{sec:MEfMRI}). If thermal denoising were to inadvertently alter the signal of interest, we would expect systematic changes in these parameter estimates. Crucially, we found that while TMPPCA outperformed other methods in terms of tSNR enhancement, its underlying $T_2^*$ and $S_0$ estimates remained closest to those derived from the undenoised datasets. This finding is particularly critical, as it demonstrates that TMPPCA effectively removes thermal noise while preserving the signal components essential for accurate multi-echo combination.
+
+Another question of interest assessed in this work is how thermal denoising affects the susceptibility to detect BOLD related signal changes through time. This changes are small in nature, therefore incrementing our sensibility to these changes is substantial in FMRI research. We found that all thermal denoising strategies increase the amount of plausible $\Delta R_2^*$ estimations. Moreover, we consistently found that given the same amount of datapoints, the amount of plausible values greatly increase, specially with TMPPCA. This proves that the variance removed result in more confident estimates of $\Delta R_2^*$ which in turn is an indirect measurement of MRI sensibility. 
+
+For NORDIC, we observed an increase in the proportion of plausible $R_2^*$ estimates. Consistent with the $\overline{R_2^*}$ analysis, this is likely driven by a systematic overestimation of this parameter. In other words, beyond noise suppression, both NORDIC and HYDRA appear to elevate the mean $R_2^*$ estimate, which in turn reduces the apparent temporal variability in $R_2^*$. This phenomenon is particularly relevant in light of existing evidence from single-echo acquisitions demonstrating spurious activation patterns emerging after thermal denoising \citep{fernandesMPPCADenoisingFMRI2023a}. Our current results indicate that this effect may be amplified in multi-echo acquisitions due to a bias in $R_2^*$ estimation arising as a consequence of variance removal \citep{kay2022risk}.
+
+We sought to demonstrate the feasibility of the proposed denoising strategies by assessing their impact on a basic functional connectivity (FC) analysis. We hypothesized that thermal denoising would enhance temporal signal stability and thereby strengthen FC estimates for signals of interest. Consistent with the physiological–thermal noise trade-off (see Sec. ~\ref{sec:noiseMRI}), we observed that FC reliability increased at lower spatial resolutions. This improvement can be attributed to higher signal-to-noise ratio (SNR) regimes, in combination with signal contributions driven by the vasculature.
+
+Across all datasets, reliability metrics increased following thermal denoising. Increases in $r^2$ values originated in regions with higher baseline signal, i.e., those located closest to the receive coils, and then extended into more distal gray matter areas. With TMPPCA, the enhancement in signal quality propagated even further, reaching distant regions such as the frontal lobe. When comparing each denoising strategy against the unprocessed (vanilla) data, TMPPCA consistently yielded the largest improvements across all datasets, providing strong evidence for its efficacy and robustness. Notably, NORDIC performance systematically ranked second to TMPPCA.
+
+Lastly, we further evaluated the robustness of noise denoising procedures using the high-resolution dataset. If the assumption holds that noise estimation and removal are data-driven and do not introduce substantial artifacts, then voxelwise functional connectivity matrices computed separately for each half of the data, as well as their associated between-halves reliability indices, should be highly similar regardless of whether each half is denoised independently. Our results indicate that reliability values remain notably stable even when each half is independently denoised, and this pattern is consistent across denoising strategies. These findings demonstrate that the reliability maps and indices are unlikely to be artifacts and provide additional evidence for the effectiveness of the denoising procedures in removing nuisance signals.
+
+As demonstrated throughout this work, TMPPCA therefore emerges as the most effective strategy for thermal denoising in multi-echo fMRI acquisitions. It consistently improves signal quality, enhances functional connectivity reliability, and does so without compromising the physiological plausibility of the underlying signal estimates—offering a robust foundation for high-resolution functional neuroimaging.
+\end{onehalfspace}
+
+\section{Conclusions}
+
+\begin{onehalfspace}
+   We investigated the effect of thermal denoising on multi‑echo signal quality and signal sensitivity, thereby strengthening the statistical power of our findings. Regarding signal quality, we observed that thermal denoising leads to an increase in temporal signal-to-noise ratio ($tSNR$) at both low- and high-resolution acquisitions. For the high-resolution data, which constitutes the primary focus of this study, we found that the best performance is achieved following TMPPCA denoising. The adaptive thresholding used in the singular value decomposition step of the algorithm exploits both temporal and spatial redundancy, resulting in a more accurate characterization of noise. Although NORDIC also enhances $tSNR$, its impact is less pronounced than that of TMPPCA.
+
+Analysis of the multi‑echo estimation parameters indicates that TMPPCA increases $tSNR$ without substantially altering multi‑echo–derived metrics. In contrast, NORDIC produces a slight increase in $\overline{R_2^*}$ which, when considered together with the $\Delta R_2^*$ plausibility analysis, suggests that the observed increase in plausible signal arises from both noise reduction and an elevation of the baseline signal. This interpretation is consistent with previous reports of NORDIC leading to effect overestimation \citep{fernandesMPPCADenoisingFMRI2023a}.
+
+Finally, with respect to signal stability and sensitivity, reliability analyses demonstrated improvements at all spatial resolutions following thermal denoising. Among the evaluated approaches, TMPPCA exhibited the largest enhancement in functional connectivity reliability. Given the central role of functional connectivity analyses in the investigation of brain function, our results indicate that TMPPCA constitutes the most effective strategy for improving signal quality and sensitivity in high‑resolution acquisitions, while preserving the integrity of multi‑echo combination parameters.
+\end{onehalfspace}
