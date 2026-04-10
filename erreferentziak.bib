@@ -1088,6 +1088,76 @@
   abstract = {Development of diffusion MRI (dMRI) denoising approaches has experienced considerable growth over the last years. As noise can inherently reduce accuracy and precision in measurements, its effects have been well characterised both in terms of uncertainty increase in dMRI-derived features and in terms of biases caused by the noise floor, the smallest measurable signal given the noise level. However, gaps in our knowledge still exist in objectively characterising dMRI denoising approaches in terms of both of these effects and assessing their efficacy. In this work, we reconsider what a denoising method should and should not do and we accordingly define criteria to characterise the performance. We propose a comprehensive set of evaluations, including i) benefits in improving signal quality and reducing noise variance, ii) gains in reducing biases and the noise floor and improving, iii) preservation of spatial resolution, iv) agreement of denoised data against a gold standard, v) gains in downstream parameter estimation (precision and accuracy), and vi) efficacy in enabling noise-prone applications, such as ultra-high-resolution imaging. We further provide newly acquired complex datasets (magnitude and phase) with multiple repeats that sample different SNR regimes to highlight performance differences under different scenarios. Without loss of generality, we subsequently apply a number of exemplar patch-based denoising algorithms to these datasets, including Non-Local Means, Marchenko-Pastur PCA (MPPCA) in the magnitude and complex domain, and NORDIC, and compare them with respect to the above criteria and against a gold standard complex average of multiple repeats. We demonstrate that all tested denoising approaches reduce noise-related variance, but not always biases from the elevated noise floor. They all induce a spatial resolution penalty, but its extent can vary depending on the method and the implementation. Some denoising approaches agree with the gold standard more than others and we demonstrate challenges in even defining such a standard. Overall, we show that dMRI denoising performed in the complex domain is advantageous to magnitude domain denoising with respect to all the above criteria.},
   file = {/Users/mflores/Zotero/storage/D3VEY24B/Manzano Patron et al. - 2024 - Denoising diffusion MRI Considerations and implications for analysis.pdf;/Users/mflores/Zotero/storage/AJ6M6YQY/imag_a_00060.html}
 }
+@article{feinbergRapidDevelopmentHigh2012,
+  title = {The Rapid Development of High Speed, Resolution and Precision in {{fMRI}}},
+  author = {Feinberg, David A. and Yacoub, Essa},
+  year = {2012},
+  month = aug,
+  journal = {NeuroImage},
+  series = {20 {{YEARS OF fMRI}}},
+  volume = {62},
+  number = {2},
+  pages = {720--725},
+  issn = {1053-8119},
+  doi = {10.1016/j.neuroimage.2012.01.049},
+  urldate = {2026-04-09},
+  abstract = {MRI pulse sequences designed to increase the speed and spatial resolution of fMRI have always been a hot topic. Here, we review and chronicle the history behind some of the pulse sequence ideas that have contributed not only to the enhancement of fMRI acquisition but also to diffusion imaging. (i) Partial Fourier EPI allows lengthening echo trains for higher spatial resolution while maintaining optimal TE and BOLD sensitivity. (ii) Inner-volume EPI renamed zoomed-EPI, achieves extremely high spatial resolution and has been applied to fMRI at 7Tesla to resolve cortical layer activity and columnar level fMRI. (iii) An early non-BOLD approach while unsuccessful for fMRI created a diffusion sequence of bipolar pulses called `twice refocused spin echo' now widely used for high-resolution DTI and HARDI neuronal fiber track imaging. (iv) Multiplexed EPI shortens TR to a few hundred milliseconds, increasing sampling rates and statistical power in fMRI.},
+  keywords = {Bipolar gradient,BOLD,Columnar level,EPI,fMRI,Functional imaging,Inner volume,Layer specific,Multiband,Multiplexed EPI,Partial Fourier,Resting state,SER,Simultaneous,SIR,Twice-refocused SE diffusion,Zoomed-EPI}
+}
+
+@article{feinbergMultiplexedEchoPlanar2010,
+  title = {Multiplexed {{Echo Planar Imaging}} for {{Sub-Second Whole Brain FMRI}} and {{Fast Diffusion Imaging}}},
+  author = {Feinberg, David A. and Moeller, Steen and Smith, Stephen M. and Auerbach, Edward and Ramanna, Sudhir and Glasser, Matt F. and Miller, Karla L. and Ugurbil, Kamil and Yacoub, Essa},
+  year = {2010},
+  month = dec,
+  journal = {PLOS ONE},
+  volume = {5},
+  number = {12},
+  pages = {e15710},
+  publisher = {Public Library of Science},
+  issn = {1932-6203},
+  doi = {10.1371/journal.pone.0015710},
+  urldate = {2026-04-09},
+  abstract = {Echo planar imaging (EPI) is an MRI technique of particular value to neuroscience, with its use for virtually all functional MRI (fMRI) and diffusion imaging of fiber connections in the human brain. EPI generates a single 2D image in a fraction of a second; however, it requires 2--3 seconds to acquire multi-slice whole brain coverage for fMRI and even longer for diffusion imaging. Here we report on a large reduction in EPI whole brain scan time at 3 and 7 Tesla, without significantly sacrificing spatial resolution, and while gaining functional sensitivity. The multiplexed-EPI (M-EPI) pulse sequence combines two forms of multiplexing: temporal multiplexing (m) utilizing simultaneous echo refocused (SIR) EPI and spatial multiplexing (n) with multibanded RF pulses (MB) to achieve m{\texttimes}n images in an EPI echo train instead of the normal single image. This resulted in an unprecedented reduction in EPI scan time for whole brain fMRI performed at 3 Tesla, permitting TRs of 400 ms and 800 ms compared to a more conventional 2.5 sec TR, and 2--4 times reductions in scan time for HARDI imaging of neuronal fibertracks. The simultaneous SE refocusing of SIR imaging at 7 Tesla advantageously reduced SAR by using fewer RF refocusing pulses and by shifting fat signal out of the image plane so that fat suppression pulses were not required. In preliminary studies of resting state functional networks identified through independent component analysis, the 6-fold higher sampling rate increased the peak functional sensitivity by 60\%. The novel M-EPI pulse sequence resulted in a significantly increased temporal resolution for whole brain fMRI, and as such, this new methodology can be used for studying non-stationarity in networks and generally for expanding and enriching the functional information.},
+  langid = {english},
+  keywords = {Data acquisition,Echo planar imaging,Fats,Functional magnetic resonance imaging,Imaging techniques,Multiplexing,Neuroimaging,Resting state functional magnetic resonance imaging},
+  file = {/home/mflores/Zotero/storage/2QVZQ4GD/Feinberg et al_2010_Multiplexed Echo Planar Imaging for Sub-Second Whole Brain FMRI and Fast.pdf}
+}
+
+@article{xuEvaluationSliceAccelerations2013,
+  title = {Evaluation of Slice Accelerations Using Multiband Echo Planar Imaging at 3 {{Tesla}}},
+  author = {Xu, Junqian and Moeller, Steen and Auerbach, Edward J. and Strupp, John and Smith, Stephen M. and Feinberg, David A. and Yacoub, Essa and U{\u g}urbil, K{\^a}mil},
+  year = {2013},
+  month = dec,
+  journal = {NeuroImage},
+  volume = {83},
+  pages = {10.1016/j.neuroimage.2013.07.055},
+  issn = {1053-8119},
+  doi = {10.1016/j.neuroimage.2013.07.055},
+  urldate = {2026-04-09},
+  abstract = {We evaluate residual aliasing among simultaneously excited and acquired slices in slice accelerated multiband (MB) echo planar imaging (EPI). No in-plane accelerations were used in order to maximize and evaluate achievable slice acceleration factors at 3 Tesla. We propose a novel leakage (L-) factor to quantify the effects of signal leakage between simultaneously acquired slices. With a standard 32-channel receiver coil at 3 Tesla, we demonstrate that slice acceleration factors of up to eight (MB = 8) with blipped controlled aliasing in parallel imaging (CAIPI), in the absence of in-plane accelerations, can be used routinely with acceptable image quality and integrity for whole brain imaging. Spectral analyses of single-shot fMRI time series demonstrate that temporal fluctuations due to both neuronal and physiological sources were distinguishable and comparable up to slice-acceleration factors of nine (MB = 9). The increased temporal efficiency could be employed to achieve, within a given acquisition period, higher spatial resolution, increased fMRI statistical power, multiple TEs, faster sampling of temporal events in a resting state fMRI time series, increased sampling of q-space in diffusion imaging, or more quiet time during a scan.},
+  pmcid = {PMC3815955},
+  pmid = {23899722}
+}
+
+@article{barthSimultaneousMultisliceSMS2016,
+  title = {Simultaneous Multislice ({{SMS}}) Imaging Techniques},
+  author = {Barth, Markus and Breuer, Felix and Koopmans, Peter J. and Norris, David G. and Poser, Benedikt A.},
+  year = {2016},
+  month = jan,
+  journal = {Magnetic Resonance in Medicine},
+  volume = {75},
+  number = {1},
+  pages = {63--81},
+  issn = {0740-3194},
+  doi = {10.1002/mrm.25897},
+  urldate = {2026-04-09},
+  abstract = {Simultaneous multislice imaging (SMS) using parallel image reconstruction has rapidly advanced to become a major imaging technique. The primary benefit is an acceleration in data acquisition that is equal to the number of simultaneously excited slices. Unlike in-plane parallel imaging this can have only a marginal intrinsic signal-to-noise ratio penalty, and the full acceleration is attainable at fixed echo time, as is required for many echo planar imaging applications. Furthermore, for some implementations SMS techniques can reduce radiofrequency (RF) power deposition. In this review the current state of the art of SMS imaging is presented. In the Introduction, a historical overview is given of the history of SMS excitation in MRI. The following section on RF pulses gives both the theoretical background and practical application. The section on encoding and reconstruction shows how the collapsed multislice images can be disentangled by means of the transmitter pulse phase, gradient pulses, and most importantly using multichannel receiver coils. The relationship between classic parallel imaging techniques and SMS reconstruction methods is explored. The subsequent section describes the practical implementation, including the acquisition of reference data, and slice cross-talk. Published applications of SMS imaging are then reviewed, and the article concludes with an outlook and perspective of SMS imaging. Magn Reson Med 75:63--81, 2016. {\copyright} 2015 The Authors. Magnetic Resonance in Medicine Published by Wiley Periodicals, Inc. on behalf of International Society of Medicine in Resonance.},
+  pmcid = {PMC4915494},
+  pmid = {26308571},
+  file = {/home/mflores/Zotero/storage/EDU7AYTL/Barth et al_2016_Simultaneous multislice (SMS) imaging techniques.pdf}
+}
+
 @article{kanwisherFusiformFaceArea1997,
   title = {The {{Fusiform Face Area}}: {{A Module}} in {{Human Extrastriate Cortex Specialized}} for {{Face Perception}}},
   shorttitle = {The {{Fusiform Face Area}}},
