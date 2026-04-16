@@ -3,7 +3,7 @@
 \sectionmark{Introduction}
 \label{sec:introRS} 
 
-\begin{onehalfspace}
+
     
 
 One of the central objectives of neuroscience is to elucidate the principles governing brain function and self-organization. To this end, human brain function is frequently investigated by relating neural activity to blood-oxygen-level-dependent (BOLD) signals measured with functional magnetic resonance imaging (fMRI), in order to characterize large-scale functional connectivity networks such as the default mode network \citep{menon20YearsDefault2023a}. Functional connectivity analyses link cortical organization to brain function across the lifespan and developmental stages \citep{taylorFunctionalHierarchyHuman2026}.
@@ -20,7 +20,7 @@ As acquisition parameters are increasingly driven toward lower signal-to-noise r
 
 In this work, we systematically investigate the impact of several thermal denoising methods (i.e., no denoising, MPPCA, NORDIC, HYDRA—spatially concatenated NORDIC—and TMPPCA) on signal quality and on the estimation of multi-echo–derived quantitative parameters (e.g., $T_2^*$, $S_0$, $R_2^*$; see Sec.~\ref{sec:MEfMRI}). Finally, after characterizing the effects on signal quality, we assess their influence on signal stability by means of a reliability analysis of functional connectivity estimates.
 
-\end{onehalfspace}
+
 
 
 
@@ -33,7 +33,7 @@ In this work, we systematically investigate the impact of several thermal denois
 
 
 
-\begin{onehalfspace}
+
     
 
  \par All resting-state MRI data were acquired on a 3T MAGNETOM PrismaFit scanner (Siemens Healthineers) equipped with a 64-channel head coil at the Basque Center on Cognition, Brain, and Language. The overarching objective of the three datasets was to characterize the impact of thermal denoising on multi-echo acquisitions in standard low-resolution protocols and, subsequently, to examine its influence in a high-resolution acquisition regime in which thermal noise is expected to dominate the signal. All runs employed simultaneous multi-slice (SMS) echo-planar imaging with in-plane GRAPPA acceleration. Single-band reference (SBRef) images were acquired for each echo time (TE). For all runs, both magnitude and phase images were reconstructed. In addition, the last three noise-only volumes were retained from each run, as these data are required for the NORDIC thermal noise reduction procedure. Finally, T1-weighted MP2RAGE and T2-weighted Turbo Spin Echo images were acquired at 1 mm isotropic resolution for each participant (see Fig.~\ref{fig:dataset} for an overview of the resting-state datasets).
@@ -67,10 +67,10 @@ To further evaluate the stability of the thermal noise estimation and the associ
 
 From the SUMA output, a skull-stripped anatomical volume was rigid-body aligned to the single-band reference (sbref) image of the first echo. The alignment was estimated using local Pearson correlation as the cost function. The resulting transformation matrix was then applied to the ROI mask to register it from anatomical space into functional space. 
 
-\end{onehalfspace}
+
 
 \section{Analysis}
-\begin{onehalfspace}
+
 
 
 \textbf{Temporal Signal-to-Noise Ratio (tSNR):} tSNR maps were computed from the whole-brain ME-OC time series to characterize data quality after denoising. This metric reflects the noise regime of the data and thereby constrains the sensitivity to detect activity-related signal fluctuations. Given that BOLD signal changes are typically small in magnitude (see Sec.~\ref{sec:BOLD}), higher tSNR values are desirable. tSNR was defined as
@@ -91,7 +91,7 @@ To quantify the magnitude of tSNR changes across denoising methods, we used the 
 
 \textbf{Functional Connectivity Reliability:} Reliability maps were calculated following the procedures described in \citet{lynchRapidPrecisionFunctional2020}(see Fig.~\ref{fig:FCreliability}). Specifically, for each ME-OC timeseries, FC maps were created using each gray matter (GM) voxel as a seed, which were segmented using each subject's anatomical images, by computing  the Pearson's linear correlation between the seed timeseries and the timeseries of the rest of GM voxels. This results in a FC matrix with $voxel\times voxel$ dimension. FC maps were calculated independently for the first and secodn half of each timeseries.  Reliability was calculated as the FC Pearson spatial correlation ($r^{2}$) between ground truth and the remaining maps. Reliability values indicate similarity between the FC of a given voxel between both halves, therefore we use as a way to test signal stability through time.
 
-\end{onehalfspace}
+
 
 \label{sec:methodsRS}
 
@@ -627,7 +627,7 @@ Of particular note, TMPPCA displays the smallest degree of overlap between indep
 
 \section{Discussion}
 
-\begin{onehalfspace}
+
     
 
 Multi-echo fMRI enhances signal quality by enabling the linear combination of information across multiple echoes, thereby improving the estimation of $T_2^*$ and $S_0$. This, in turn, increases sensitivity to neurophysiological changes of BOLD origin \citep{poser2006bold, kundu2017multi}.
@@ -649,14 +649,14 @@ Across all datasets, reliability metrics increased following thermal denoising. 
 Lastly, we further evaluated the robustness of noise denoising procedures using the high-resolution dataset. If the assumption holds that noise estimation and removal are data-driven and do not introduce substantial artifacts, then voxelwise functional connectivity matrices computed separately for each half of the data, as well as their associated between-halves reliability indices, should be highly similar regardless of whether each half is denoised independently. Our results indicate that reliability values remain notably stable even when each half is independently denoised, and this pattern is consistent across denoising strategies. These findings demonstrate that the reliability maps and indices are unlikely to be artifacts and provide additional evidence for the effectiveness of the denoising procedures in removing nuisance signals.
 
 As demonstrated throughout this work, TMPPCA therefore emerges as the most effective strategy for thermal denoising in multi-echo fMRI acquisitions. It consistently improves signal quality, enhances functional connectivity reliability, and does so without compromising the physiological plausibility of the underlying signal estimates—offering a robust foundation for high-resolution functional neuroimaging.
-\end{onehalfspace}
+
 
 \section{Conclusions}
 
-\begin{onehalfspace}
+
    We investigated the effect of thermal denoising on multi‑echo signal quality and signal sensitivity, thereby strengthening the statistical power of our findings. Regarding signal quality, we observed that thermal denoising leads to an increase in temporal signal-to-noise ratio ($tSNR$) at both low- and high-resolution acquisitions. For the high-resolution data, which constitutes the primary focus of this study, we found that the best performance is achieved following TMPPCA denoising. The adaptive thresholding used in the singular value decomposition step of the algorithm exploits both temporal and spatial redundancy, resulting in a more accurate characterization of noise. Although NORDIC also enhances $tSNR$, its impact is less pronounced than that of TMPPCA.
 
 Analysis of the multi‑echo estimation parameters indicates that TMPPCA increases $tSNR$ without substantially altering multi‑echo–derived metrics. In contrast, NORDIC produces a slight increase in $\overline{R_2^*}$ which, when considered together with the $\Delta R_2^*$ plausibility analysis, suggests that the observed increase in plausible signal arises from both noise reduction and an elevation of the baseline signal. This interpretation is consistent with previous reports of NORDIC leading to effect overestimation \citep{fernandesMPPCADenoisingFMRI2023a}.
 
 Finally, with respect to signal stability and sensitivity, reliability analyses demonstrated improvements at all spatial resolutions following thermal denoising. Among the evaluated approaches, TMPPCA exhibited the largest enhancement in functional connectivity reliability. Given the central role of functional connectivity analyses in the investigation of brain function, our results indicate that TMPPCA constitutes the most effective strategy for improving signal quality and sensitivity in high‑resolution acquisitions, while preserving the integrity of multi‑echo combination parameters.
-\end{onehalfspace}
+

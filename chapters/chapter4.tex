@@ -3,7 +3,7 @@
 \sectionmark{Introduction}
 \label{sec:introtask} 
 
-\begin{onehalfspace}
+
 
 As neuroscience seeks to characterize the principles governing brain function, task-based functional magnetic resonance imaging (fMRI) has emerged as an important tool for investigating the relationship between cognitive processes and neural activity. Carefully controlled experimental paradigms enable the identification of functionally specialized brain regions in relatively short scanning sessions, based on the hypothesis that the blood-oxygen-level-dependent (BOLD) response in task-relevant regions will be stronger and temporally more structured than in task-irrelevant regions \citep{poldrackRegionInterestAnalysis2007, saxeDivideConquerDefense2006, gloverDeconvolutionImpulseResponse1999}.
 
@@ -22,7 +22,7 @@ In this work, we investigate the most effective thermal denoising strategy for m
 
 
 
-\end{onehalfspace}
+
 
 \section{Method}
 \sectionmark{MethodsT}
@@ -33,7 +33,7 @@ In this work, we investigate the most effective thermal denoising strategy for m
 \subsection{Image Acquisition Parameters}
 \subsectionmark{Image Acquisition Parameters}
 \label{ImageParametersT}
-\begin{onehalfspace}
+
     Task-related fMRI runs were acquired on a 3T MAGNETOM PrismaFit scanner (Siemens Healthineers) equipped with a 64-channel head coil at the Basque Center on Cognition, Brain, and Language. The primary objective of the dataset was to characterize the influence of thermal denoising on multi-echo acquisitions within a functional localizer fMRI paradigm. All runs employed simultaneous multi-slice (SMS) echo-planar imaging with in-plane GRAPPA acceleration. Single-band reference (SBRef) images were acquired for each echo time (TE). For all runs, both magnitude and phase images were reconstructed. In addition, the last three noise-only volumes of each run were retained, as these data are required for the NORDIC thermal noise reduction procedure. Finally, T1-weighted MP2RAGE and T2-weighted turbo spin-echo images were acquired at 1 mm isotropic resolution.
 
 \textbf{1.5 mm dataset (high resolution, single subject)} A healthy male participant was scanned with a three-echo fMRI sequence during four sessions of ten runs ( 5 min per run) at 1.5 mm isotropic resolution (TR = 2 s, TEs = 16/46.92/77.84 ms, SMS = 4, partial Fourier (PF) = 6/8, GRAPPA = 2). The principal aim of this dataset is to examine the effect of denoising in a functional localizer task at the highest spatial resolution that is practically attainable at 3T, a regime in which thermal noise is the predominant determinant of the signal-to-noise ratio (SNR).
@@ -47,23 +47,23 @@ In this work, we investigate the most effective thermal denoising strategy for m
     \label{fig:placeholder}
 \end{figure}
 
-\end{onehalfspace}
 
 
-\begin{onehalfspace}
+
+
 \textbf{Thermal denoising} The dataset was independently denoised using different algorithms prior to minimal preprocessing: undenoised (vanilla), MP-PCA, NORDIC, NORDIC applied to spatially concatenated echoes (HYDRA), and tensor MP-PCA (TMPPCA).
-\end{onehalfspace}
-\begin{onehalfspace}
+
+
 \textbf{fMRI preprocessing} Multi-echo (ME) fMRI data were minimally preprocessed using AFNI. The preprocessing pipeline included discarding the initial 10 volumes to ensure steady-state magnetization, realigning the first echo to the single-band reference (SBRef) image, and applying the resulting transformation parameters to all remaining echoes. For the high-resolution dataset, all runs were additionally aligned to the SBRef of the first run using a local Pearson correlation cost function (\texttt{align\_epi\_anat.py}, \texttt{3dAllineate}). A T2\textbf{*}-weighted optimal linear combination of the echoes was subsequently computed using TEDANA (multi-echo optimal combination, ME-OC). To rigorously assess the robustness of the thermal denoising approaches, no motion censoring was applied, with the understanding that this choice may degrade signal quality and thereby render time-series predictions noisier.
- \end{onehalfspace}
-\begin{onehalfspace}
+ 
+
  \textbf{Region of interest (ROI) creation} The anatomical image was segmented using FreeSurfer (version 7.4.0) with the \texttt{recon-all} pipeline \citep{fischl2004automatically}. The resulting segmentations were subsequently transformed into AFNI volumetric space using the \texttt{@SUMA\_Make\_Spec\_FS} utility. A custom ROI mask was then generated with AFNI’s \texttt{3dcalc}, incorporating the bilateral cortical gray-matter ribbons as well as subcortical structures. 
 
 From the SUMA output, a skull-stripped anatomical volume was rigid-body aligned to the single-band reference (sbref) image of the first echo. The alignment was estimated using local Pearson correlation as the cost function. The resulting transformation matrix was then applied to the ROI mask to register it from anatomical space into functional space. 
-\end{onehalfspace}
+
 
 \section{Analysis}
-\begin{onehalfspace}
+
     
 
 \textbf{Event-based general linear model (GLM):} For each denoising strategy, a general linear model (GLM), as implemented in the Nilearn, and Scikit with Python 3.11 , was fitted to gray-matter–masked time series after standardizing each voxel’s signal across time ( $\widehat{S}(t) = \frac{S(t) - \bar{S}}{\bar{S}} $ ), thereby ensuring comparability across runs.
@@ -93,7 +93,7 @@ For each permutation, $70\%$ of the runs were randomly selected for GLM fitting 
 
 After GLM fitting, event-specific beta estimates were multiplied by the design matrix of the test runs to generate predicted time series for each voxel. Prediction accuracy was quantified by computing the coefficient of determination, $r^{2}$, between the predicted and observed time series for each voxel. Finally, we reported the mean per-voxel $r^{2}$ across permutations to enable comparison between denoising strategies.
 
-\end{onehalfspace}
+
 \section{Results}
 
 
@@ -123,7 +123,7 @@ After GLM fitting, event-specific beta estimates were multiplied by the design m
     \label{fig:glmdist}
 \end{figure}
 
-\begin{onehalfspace}
+
     
 The objective of this analysis was to evaluate the efficacy of thermal denoising in preserving task-related signal by quantifying the discrepancy between predicted time series, derived from the corresponding design matrices, and empirically observed time series. The analysis was performed over 100 iterations and was restricted to runs with the highest behavioral accuracy (22 runs in total).
 
@@ -134,7 +134,7 @@ For the VANILLA dataset, the highest $r^2$ scores were localized to task-relevan
 The distribution of $r^2$ scores (Fig.~\ref{fig:glmdist}) further supports the beneficial impact of thermal denoising, as evidenced by heavier distribution tails skewed towards higher values. In addition to the overall increase in $r^2$, the distribution shifts from unimodal to bimodal, presumably reflecting a clearer separation between task-sensitive and non–task-sensitive voxels. This analysis suggests that thermal denoising increases the proportion of variance in the time series that can be attributed to the experimental design alone. We anticipate that a more fine-grained analysis restricted to strongly task-responsive regions would yield even more pronounced improvements.
 
 This analysis primarily assesses the overall generalizability of model fitting, approximating scenarios encountered in standard first-level fMRI analyses. It is important to note that, because this analysis evaluates prediction of the full time series rather than task-specific segments alone, residual confounds such as motion-related artifacts may still degrade signal quality. To more directly characterize the gain in sensitivity conferred by thermal denoising, we therefore conducted an additional analysis focusing on the task-localizer contrast sensitivity for faces.
-\end{onehalfspace}
+
 
 
 
@@ -142,7 +142,7 @@ This analysis primarily assesses the overall generalizability of model fitting, 
 
 \subsection{Task-localizer contrast sensitivity}
 
-\begin{onehalfspace}
+
 The objective of this analysis was to assess changes in sensitivity in a functional localizer task following the application of thermal denoising procedures. We examined the effect on sensitivity when fitting the GLM using one, two, or three runs. Under the assumption that only signal components of no interest are removed, we would expect an increase in $t$-values and its spread after denoising. In addition, incorporating a greater number of runs into the GLM fit should, in principle, further increase $t$-values.
 
 The $t$-maps for each denoising strategy across different numbers of runs per GLM fit show clear differences in sensitivity, manifested as increased saturation as a function of the number of runs and its interaction with the denoising method (Fig.~\ref{fig:localizer}). Consistent with the resting-state analysis, we find that HYDRA underperforms relative to NORDIC, which further supports the notion that the spatial redundancy introduced by spatial echo concatenation adversely affects $tSNR$ and sensitivity in high-resolution acquisitions.
@@ -154,7 +154,7 @@ Notably, the $t$-maps for the VANILLA condition exhibit more values close to zer
 
 
 
-\end{onehalfspace}
+
 
 \begin{figure}[htbp]
 \centering \colorbox{black}{
@@ -184,7 +184,7 @@ Notably, the $t$-maps for the VANILLA condition exhibit more values close to zer
 \end{figure} 
 
 \section{Discussion}
-\begin{onehalfspace}
+
 
 Our objective is to determine the optimal denoising strategy, within a task-based paradigm, for applying thermal noise suppression to high‑resolution multi‑echo acquisitions. In previous work, we demonstrated that TMPPCA outperforms NORDIC, HYDRA, and MPPCA on signal quality metrics in resting‑state acquisitions (see Chap. \ref{chap:denoising}). Here, we extend this evaluation to task‑based data, assessing the extent to which thermal denoising enhances sensitivity to task‑evoked brain activity, thereby improving the utility of functional imaging for neuroscience \citep{poldrackRegionInterestAnalysis2007}. Consistent with prior findings, thermal denoising improves signal quality \citep{zhu2022denoise,comby2023denoising}.
 
@@ -197,11 +197,11 @@ To further quantify the beneficial effect of denoising on task‑selective voxel
 Across all evaluations, TMPPCA, followed by NORDIC, provided the most favorable results, producing higher and more spatially localized $t$‑statistics. Notably, we observed superior performance when fitting a GLM to a single run of TMPPCA‑denoised data relative to undenoised data. This pattern held across all denoising strategies, whereby a single run of denoised time series outperformed the VANILLA (undenosed) condition.
 
 
-\end{onehalfspace}
+
 
 
 \section{Conclusions}
-\begin{onehalfspace}
+
     
 
 We investigated the impact of thermal denoising on multi‑echo sensitivity to BOLD‑induced effects, thereby extending the scope of our findings to task‑based analyses.
@@ -211,6 +211,6 @@ With respect to signal sensitivity, we found that thermal denoising increases th
 In a more fine‑grained analysis of signal sensitivity, we observed that thermal denoising leads to an increase in both the magnitude and the number of statistically significant $t$‑values, thereby facilitating localization of the FFA. As expected, increasing the number of runs improved activation localization. Among the evaluated strategies, TMPPCA substantially improved localization of task‑related regions even with a single run, and this advantage became more pronounced with three runs. Consistent with previous reports, NORDIC provided the second‑largest improvement.
 
 Our analyses demonstrate that, at high spatial resolution, thermal denoising is a feasible and effective strategy for enhancing task sensitivity. Moreover, our results consistently show that TMPPCA achieves the best overall performance, followed by NORDIC. 
-\end{onehalfspace}
+
  
 
