@@ -2,20 +2,6 @@
 \semiisopage
 
 
-
-%% KAPITULU FORMATU BATZUK ARAZOAK EMATEN DITUZTE DOKUMENTUA 
-%% MOZTERAKOAN (croppedsize AUKERAREKIN, BEHEAN AGERTZEN DENA). 
-%% JARRAIAN ALTERNATIBA SGURU BATZUK DAUDE
-
-%\chapterstyle{default}
-%\chapterstyle{bianchi}
-%\chapterstyle{brotherton}
-%\chapterstyle{demo2}
-%\chapterstyle{ell}
-%\chapterstyle{ger}
-%\chapterstyle{wilsondob}
-
-
 \pdfobjcompresslevel 0
 
 
@@ -90,44 +76,14 @@
 \newcommand{\data}{\today}
 
 
-%% BAKARRIK BAT DESKOMENTATU, GRADU AMAIERAKO LANA BADA. BESTELA, DENAK KOMENTATU%%
-%% DESCOMENTAR SOLO UNO SI ES UN TRABAJO FIN DE GRADO. SINO, COMENTAR TODOS%%
-
-%\newcommand{\ikasketak}{Informatika Ingeniaritzako Gradua}
 \newcommand{\ikasketak}{Doctoral Program in Cognitive Neuroscience}
-%\newcommand{\ikasketak}{Adimen Artifizialeko Gradua}
-%\newcommand{\ikasketak}{Grado en Inteligencia Artificial}
 
-
-%% BAKARRIK BAT DESKOMENTATU, INGENIARITZA INFORMATIKAKOA BADA. BESTELA, DENAK KOMENTATU %%
-%% DESCOMENTAR SOLO UNO SI ES EN INGENIERÍA INFORMÁTICA. SINO, COMENTAR TODOS %%
-
-%\newcommand{\espezialitatea}{Konputazioa}
-%\newcommand{\espezialitatea}{Computación}
-%\newcommand{\espezialitatea}{Software Ingeniaritza}
-%\newcommand{\espezialitatea}{Ingeniería de Software}
-%\newcommand{\espezialitatea}{Konputagailuen Ingeniaritza}
-%\newcommand{\espezialitatea}{Ingeniería de Computadores}
-
-
-%% BAKARRIK BAT DESKOMENTATU MASTER AMAIERAKO LANA BADA. BESTELA, DENAK KOMENTATU%%
-%% DESCOMENTAR SOLO UNO SI ES UN TRABAJO FIN DE MASTER. SINO, COMENTAR TODOS%%
-
-%\newcommand{\ikasketak}{Máster Universitario en Ingeniería Computacional y Sistemas Inteligentes}
-%\newcommand{\ikasketak}{Konputazio Ingeniaritza eta Sistema Adimentsuak Unibertsitate Masterra}
-
-%% TESIENTZAKO KONFIGURATU
-%\newcommand{\saila}{Department of Computer Science and Artificial Intelligence}
 \newcommand{\phdarloa}{Cognitive Neuroscience}
 %% KOMENTATU A4 FORMATUAN ATERATZEKO, FORMATU TXIKIAGOAN AGERTZEKO 
 %% GERO INPRIMATZEKO. MOZTEKO MARKAK IKUSTEKO GEHITU showtrims AUKERA
 %% memoir KLASEAREN ARGUMENTUETAN
 %\newcommand{\croppedsize}
 
-%% DOKUMENTUAREN HIZKUNTZA / IDIOMA DEL DOCUMENTO %%
-%% BAKARRIK BAT DESKOMENTATU / DESCOMENTAR SOLO UNO %%
-%\newcommand{\euskaraz}
-%\newcommand{\castellano}
 \newcommand{\english}
 
 
@@ -139,21 +95,9 @@
 
 
 \begin{document}
+\SingleSpacing
 
 
-%% AZALA BEREZIRIK BADUZU (PDF FORMATUAN), DESKOMENTATU%%
-%% SI HAY UNA PORTADA ESPECIAL (EN PDF), DESCOMENTAR%%
-	
-%\includepdf[pages={1-}]{cover.pdf}
-%\cleardoublepage
-
-
-%% AUKERATU DAGOKIONA. AZALA BEREZIA GEHITUZ GERO, KOMENTATU DAITEKE, BETIERE HEMENGOAN AGERTZEN DEN INFORMAZIOA AGERTZEN BADA %%
-%% SELECCIONA LA QUE CORRESPONDA. EN CASO DE TENER UNA PORTADA ESPECIAL SE PUEDE COMENTAR, SIEMPRE Y CUANDO DICHA PORTADA INCLUYA LA INFORMACIÓN QUE APARECE EN ESTA%%
-
-%\input config/cover_informatika
-%\input config/cover_adimen_artifiziala
-%\input config/cover_masterra
 \input config/cover_phd_dissertation
 
 \cleardoublepage
@@ -166,17 +110,26 @@
 
 %% KOMENTATU HIRU LERRO HAUEK ATALA NAHI EZ BADUZU
 %% COMENTA ESTAS TRES LÍNEAS SI NO QUIERES ESTE APARTADO
-\chapter*{Esker onak / Agradecimientos}
-\input chapters/acknowledgements
-\cleardoublepage
+%\chapter*{Esker onak / Agradecimientos}
+%\input chapters/acknowledgements
+%\cleardoublepage
 
 %%%%%%%%%%%%%%%%%%%%%%%
 % LABURPENA / RESUMEN %
 %%%%%%%%%%%%%%%%%%%%%%%
 
 \chapter*{Laburpena / Resumen}
+\input chapters/resumen
+\cleardoublepage
+
+
+%%%%%%%%%%%%%%%%%%%%%%%
+% LABURPENA / ABSTRACT %
+%%%%%%%%%%%%%%%%%%%%%%%
+\chapter*{Abstract}
 \input chapters/abstract
 \cleardoublepage
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % EDUKIEN ZERRENDA / ÍNIDCES %
@@ -199,6 +152,9 @@
 \cleardoublepage
 \mainmatter
 \pagestyle{ruled}
+
+
+
 
 \chapter{Nuclear Magnetic Resonance and Magnetic Resonance Imaging}
 \input chapters/chapter1

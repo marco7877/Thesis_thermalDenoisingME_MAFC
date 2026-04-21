@@ -56,14 +56,7 @@ Consequently, deoxyhemoglobin induces more pronounced  magnetic field inhomogene
 
 
 
-Notably, changes in $T_2^*$ because of the BOLD effect reflect neural population 
-synaptic behavior and their time dynamics are slower than neuron spiking 
-behaviour \citep{logothetisWhatWeCan2008, viswanathanNeurometabolicCouplingCerebral2007} 
-(see Section~\ref{sec:hrf}). Importantly, $T_2^*$ values are not uniform across 
-the brain \citep{petersT2MeasurementsHuman2007, menon19934}; they vary according 
-to tissue type (e.g., cortical versus subcortical regions) and depend on the 
-orientation of blood vessels and cellular structures relative to the main magnetic 
-field \citep{viessmannDependenceRestingstateFMRI2019, uludagIntegrativeModelNeuronal2009a}.
+Notably, changes in $T_2^*$ because of the BOLD effect reflect neural population synaptic behavior and their time dynamics are slower that neuron spiking behaviour \citep{logothetisWhatWeCan2008,viswanathanNeurometabolicCouplingCerebral2007} (see \ref{sec:hrf}). Importantly, $T_2^*$ values are not uniform across the brain \citep{petersT2MeasurementsHuman2007, menon19934}; they vary according to tissue type (e.g., cortical versus subcortical regions) and depend on the orientation of blood vessels and cellular structures relative to the main magnetic field \citep{viessmannDependenceRestingstateFMRI2019,uludagIntegrativeModelNeuronal2009a}. 
 
 Echo-planar imaging (EPI) sequences are the most frequently employed MRI acquisition schemes for generating $T_2$- or $T_2^*$-weighted images because of their high sensitivity to magnetic field inhomogeneities, such as those induced by the BOLD effect (see \ref{sec:epi}). With a gradient-echo (GE) EPI sequence, the MR signal can be modeled as
 
@@ -267,7 +260,7 @@ where \(\mathrm{pinv}(\cdot)\) denotes the Moore–Penrose pseudoinverse of the 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=6cm]{images/echo-combination.pdf}
-    \caption[S0 and T2 estimation in Multi-echo combination]{S0 and T2 estimation in Multi-echo combination. The parameters $\bar{S_0}$ and $\bar{T_2^*}$ can be expressed as transformations of the model intercept between echoes, $\beta_0$, and slope, $1/\beta_1$, respectively}
+    \caption[S0 and T2 estimation in Multi-echo combination]{S0 and T2 estimation based on multi-echo fMRI data. The parameters $\bar{S_0}$ and $\bar{T_2^*}$ can be expressed as transformations of the model intercept between echoes, $\beta_0$, and slope, $1/\beta_1$, respectively}
     \label{fig:S0T2ME}
 \end{figure}
 
@@ -294,7 +287,7 @@ It enhances overall signal quality by exploiting the distinct contrast and signa
     \label{fig:ME_S0R2}
 \end{figure}
 
-    Beyond enabling a voxel‑wise, optimally weighted combination of multiple echoes, multi‑echo fMRI (ME‑fMRI) confers specific advantages for thermal noise attenuation \citep{brightRemovingMotionPhysiological2013} (Fig. \ref{fig:ME_S0R2}). The individual echoes differ in their $T_2^$ weighting and thermal noise characteristics, yet share essentially identical $T_1$ weighting. By acquiring a sufficiently short echo time (TE), one obtains a signal with minimal $T_2^*$ weighting. This short‑TE signal can then be used, together with later, more BOLD‑sensitive echoes, to model and regress out fluctuations in $S_0$ — fluctuations that are presumed to be less contaminated by thermal noise \citep{caballero2017methods}.
+    Beyond enabling a voxel‑wise, optimally weighted combination of multiple echoes, multi‑echo fMRI (ME‑fMRI) confers specific advantages for thermal noise attenuation \citep{brightRemovingMotionPhysiological2013} (Fig. \ref{fig:ME_S0R2}). The individual echoes differ in their $T_2^$ weighting and thermal noise characteristics, yet share essentially identical $T_1$ weighting. By acquiring a sufficiently short echo time (TE), one obtains a signal with minimal $T_2^$ weighting. This short‑TE signal can then be used, together with later, more BOLD‑sensitive echoes, to model and regress out fluctuations in $S_0$ — fluctuations that are presumed to be less contaminated by thermal noise \citep{caballero2017methods}.
 
 In addition, multi-echo acquisitions facilitate the separation of BOLD and non‑BOLD signal components (e.g., via multi-echo independent component analysis, ME‑ICA) by exploiting their differential fit to either $S_0$‑based ($T_1$‑relaxation–dominated) or $R_2^*$‑based ($T_2$‑relaxation–dominated) models. This biophysical contrast enhances statistical effect sizes and remains one of the most widely used approaches for denoising in multi‑echo fMRI studies \citep{kundu2012differentiating, dupre2021te, kunduIntegratedStrategyImproving2013a}.
 
@@ -444,6 +437,7 @@ Alternatively, low‑rank denoising encompasses a class of techniques that rely 
 
 
 \subsection{Low-rank denoising methods}
+\label{sec:lowrank}
 
 
 
